@@ -3,12 +3,43 @@
  */
 package pw.proz;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        JFrame frame = new JFrame("Szachy");
+        frame.setSize(700, 700);
+        frame.setVisible(true);
+
+        //chessSquares is a array of rows, so i is for row, and j is for columns
+        Square[][] chessSquares = new Square[8][8];
+
+        boolean wasTheLastBlack = true;
+        for(int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                chessSquares[i][j] = new Square();
+                if (wasTheLastBlack) {
+                    chessSquares[i][j].colorOfTheSquare = Color.GRAY;
+                    wasTheLastBlack = false;
+                } else {
+                    chessSquares[i][j].colorOfTheSquare = Color.BLACK;
+                    wasTheLastBlack = true;
+                }
+                chessSquares[i][j].setBackground(chessSquares[i][j].colorOfTheSquare);
+                int posX = chessSquares[i][j].x + 50 * (i);
+                int posY = chessSquares[i][j].y + 50 * (j);
+                chessSquares[i][j].setBounds(posX, posY, 50, 50);
+               // ImageIcon icon = new ImageIcon(getClass().getResource("drive.png"));
+                ImageIcon icon = new ImageIcon("C:\\Users\\IG\\Desktop\\prog\\PROZ\\PROZ-template\\app\\images\\pawn_white.png");
+                chessSquares[i][j].setIcon(icon);
+                System.out.println(icon.getIconHeight());
+                frame.add(chessSquares[i][j]);
+            }
+            wasTheLastBlack = !wasTheLastBlack;
+        }
+        frame.setLayout(new GridLayout(8,8));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
