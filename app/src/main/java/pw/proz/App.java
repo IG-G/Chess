@@ -6,16 +6,39 @@ package pw.proz;
 import javax.swing.*;
 import java.awt.*;
 
+
 public class App {
 
     public static void main(String[] args) {
+
         JFrame frame = new JFrame("Szachy");
         frame.setSize(700, 700);
+
+        setMenuBar(frame);
+
+        Board board = new Board(frame.getContentPane());
+
         frame.setVisible(true);
-
-        Board board = new Board(frame);
-
-        frame.setLayout(new GridLayout(8,8));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    private static void setMenuBar(JFrame frame){
+        JMenuBar menuBar = new JMenuBar();
+        JMenu gameMenu = new JMenu("Game");
+        JMenu viewMenu = new JMenu("View");
+
+        JMenuItem newGameOption = new JMenuItem("Start new game");
+        gameMenu.add(newGameOption);
+        JMenuItem saveGameIntoPGN = new JMenuItem("Save PGN");
+        gameMenu.add(saveGameIntoPGN);
+        menuBar.add(gameMenu);
+
+        JMenuItem changeBoardColorOption = new JMenuItem("Change color of the board");
+        viewMenu.add(changeBoardColorOption);
+        JMenuItem changePieceIconsOption = new JMenuItem("Change pieces");
+        viewMenu.add(changePieceIconsOption);
+        menuBar.add(viewMenu);
+
+        frame.setJMenuBar(menuBar);
     }
 }
