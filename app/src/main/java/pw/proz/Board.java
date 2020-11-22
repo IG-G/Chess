@@ -107,10 +107,10 @@ public class Board {
     }
 
     private void loadDefaultIcons(){
-        String po = Board.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        int i = po.lastIndexOf("PROZ-template/app/");
-        String pathToDefaultIcons = po.substring(0, i);
-        pathToDefaultIcons += "PROZ-template/app/images/";
+        String runtimePath = Board.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        int i = runtimePath.lastIndexOf("/app/");
+        String pathToDefaultIcons = runtimePath.substring(0, i);
+        pathToDefaultIcons += "/app/images/";
 
 
         whitePiecesIcons[0] = new ImageIcon(pathToDefaultIcons + "pawn_white.png");
