@@ -1,4 +1,4 @@
-package pw.proz;
+package View;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -24,10 +24,10 @@ public class Square extends JButton {
         setBackground(color);
     }
 
-    public void setPieceIcon(Icon icon){
+    public void setPieceIcon(Icon icon) {
         pieceIcon = icon;
     }
-    public Icon getImageIcon(){
+    public Icon getImageIcon() {
         return pieceIcon;
     }
 }
