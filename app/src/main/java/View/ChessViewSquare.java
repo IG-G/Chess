@@ -4,19 +4,35 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 
-public class Square extends JButton {
+public class ChessViewSquare extends JButton {
     Color colorOfTheSquare;
     Icon pieceIcon;
     int posXInUI, posYInUI;
-    //Piece pieceOnThatSquare; in prep
-    public Square() {
-        setUI(new BasicButtonUI()); //to clear effects on click
+    int posXOnBoard, posYOnBoard;
+    public ChessViewSquare() {
+        setUI(new BasicButtonUI()); //to clear on-click effects
         posXInUI = 0;
         posYInUI = 0;
         setSize(50, 50);
         pieceIcon = null;
         setBorderPainted(false);
         setFocusPainted(false);
+    }
+
+    public void setPosXonBoard(int posXonBoard) {
+        this.posXOnBoard = posXonBoard;
+    }
+
+    public void setPosYonBoard(int posYonBoard) {
+        this.posYOnBoard = posYonBoard;
+    }
+
+    public int getPosXOnBoard() {
+        return posXOnBoard;
+    }
+
+    public int getPosYOnBoard() {
+        return posYOnBoard;
     }
 
     public void setColorOfTheSquare(Color color) {
