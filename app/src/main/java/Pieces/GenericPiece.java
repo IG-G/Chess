@@ -26,56 +26,41 @@ public class GenericPiece implements ChessPiece{
         return color;
     }
 
+
     @Override
     public List<ChessModelSquare> checkPossibleMoves(ChessModelSquare square, ChessModelSquare[][] board) {
         List<ChessModelSquare> possibleMoves = new ArrayList<ChessModelSquare>();
         if(down) {
-            for (int i = square.getY() - 1; i >= 0; i--)
-                if (board[i][square.getX()].getPiece() == null)
-                    possibleMoves.add(board[i][square.getX()]);
-                else
-                    break;
+            checkMovesDown(square, board, possibleMoves);
         }
         if(up) {
-            for (int i = square.getY() + 1; i < 8; i++)
-                if (board[i][square.getX()].getPiece() == null)
-                    possibleMoves.add(board[i][square.getX()]);
-                else
-                    break;
+            checkMovesUp(square, board, possibleMoves);
         }
         if(left) {
-            for (int i = square.getX() - 1; i >= 0; i--)
-                if (board[square.getY()][i].getPiece() == null)
-                    possibleMoves.add(board[square.getY()][i]);
-                else
-                    break;
+            checkMovesLeft(square, board, possibleMoves);
         }
         if(right) {
-            for (int i = square.getX() + 1; i < 8; i++)
-                if (board[square.getY()][i].getPiece() == null)
-                    possibleMoves.add(board[square.getY()][i]);
-                else
-                    break;
+            checkMovesRight(square, board, possibleMoves);
         }
         if(leftDiagonal){
-            for(int i = square.getX() + 1, j = square.getY() + 1; i < 8; i++, j++)
+            for(int i = square.getX() + 1, j = square.getY() + 1; i < 8 && j < 8; i++, j++)
                 if (board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
                 else
                     break;
-            for(int i = square.getX() - 1, j = square.getY() - 1; i >= 0; i--, j--)
+            for(int i = square.getX() - 1, j = square.getY() - 1; i >= 0 && j >= 0; i--, j--)
                 if(board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
                 else
                     break;
         }
         if(rightDiagonal){
-            for(int i = square.getX() - 1, j = square.getY() + 1; i >= 0; i--, j++)
+            for(int i = square.getX() - 1, j = square.getY() + 1; i >= 0 && j < 8; i--, j++)
                 if (board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
                 else
                     break;
-            for(int i = square.getX() + 1, j = square.getY() - 1; i < 8; i++, j--)
+            for(int i = square.getX() + 1, j = square.getY() - 1; i < 8 && j >= 0; i++, j--)
                 if(board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
                 else
@@ -89,6 +74,9 @@ public class GenericPiece implements ChessPiece{
                     continue;
                 if(board[square.getY() + itr.shiftY][square.getX() + itr.shiftX].getPiece() == null)
                     possibleMoves.add(board[square.getY() + itr.shiftY][square.getX() + itr.shiftX]);
+                if(board[square.getY() + itr.shiftY][square.getX() + itr.shiftX].getPiece() != null)
+                    if(board[square.getY() + itr.shiftY][square.getX() + itr.shiftX].getPiece().getColor() != color)
+                        possibleMoves.add(board[square.getY() + itr.shiftY][square.getX() + itr.shiftX]);
             }
         }
 

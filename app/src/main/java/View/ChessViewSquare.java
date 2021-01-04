@@ -5,7 +5,8 @@ import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 
 public class ChessViewSquare extends JButton {
-    Color colorOfTheSquare;
+    ColorOfSquare colorOfSquare; //WHITE OR BLACK
+    Color displayingColorOfSquare; //for displaying purposes
     Icon pieceIcon;
     int posXInUI, posYInUI;
     int posXOnBoard, posYOnBoard;
@@ -17,6 +18,14 @@ public class ChessViewSquare extends JButton {
         pieceIcon = null;
         setBorderPainted(false);
         setFocusPainted(false);
+    }
+
+    public ColorOfSquare getColorOfSquare() {
+        return colorOfSquare;
+    }
+
+    public void setColorOfSquare(ColorOfSquare colorOfSquare) {
+        this.colorOfSquare = colorOfSquare;
     }
 
     public void setPosXonBoard(int posXonBoard) {
@@ -35,8 +44,8 @@ public class ChessViewSquare extends JButton {
         return posYOnBoard;
     }
 
-    public void setColorOfTheSquare(Color color) {
-        colorOfTheSquare = color;
+    public void setDisplayingColorOfSquare(Color color) {
+        displayingColorOfSquare = color;
         setBackground(color);
     }
 

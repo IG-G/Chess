@@ -2,8 +2,6 @@ package Model;
 
 import Pieces.ChessPiece;
 
-import java.util.List;
-
 public class ChessModelSquare {
     private ChessPiece piece;
     private final int x;

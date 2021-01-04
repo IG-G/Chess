@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 
+
 //Class contains board parameters for GUI
 //as well as type of piece on square (in class Square)
 public class ChessViewBoard {
@@ -19,7 +20,8 @@ public class ChessViewBoard {
     Color whiteSquareColor = DEFAULT_COLOR_WHITE;
     Color blackSquareColor = DEFAULT_COLOR_BLACK;
     Container frame;
-    ChessViewSquare clickedSquare = null;
+
+    ChessViewSquare[] possibleMovesSquares = null;
 
     public ChessViewBoard(Container frame) {
         this.frame = frame;
@@ -28,25 +30,40 @@ public class ChessViewBoard {
         blackPiecesIcons = new ImageIcon[6];
     }
 
-    public ChessViewSquare getClickedSquare() {
-        return clickedSquare;
-    }
-
-    public void setClickedSquare(ChessViewSquare clickedSquare) {
-        this.clickedSquare = clickedSquare;
-    }
-
-    public ChessViewSquare[][] getChessSquares(){
-        return chessSquares;
+    public ChessViewSquare getChessViewSquare(int row, int col){
+        return chessSquares[row][col];
     }
 
     public Color getDEFAULT_COLOR_POSSIBLE_MOVE() {
         return DEFAULT_COLOR_POSSIBLE_MOVE;
     }
 
+    public void setPossibleMovesSquares(ChessViewSquare[] possibleMovesSquares) {
+        this.possibleMovesSquares = possibleMovesSquares;
+        for (ChessViewSquare square: possibleMovesSquares) {
+            square.setDisplayingColorOfSquare(DEFAULT_COLOR_POSSIBLE_MOVE);
+        }
+    }
+
+    public void cleanPossibleMovesSquares(){
+        for (ChessViewSquare square: possibleMovesSquares) {
+            if(square.getColorOfSquare() == ColorOfSquare.WHITE)
+                square.setDisplayingColorOfSquare(DEFAULT_COLOR_WHITE);
+            else
+                square.setDisplayingColorOfSquare(DEFAULT_COLOR_BLACK);
+        }
+        possibleMovesSquares = null;
+    }
+
+    public void makeMove(int sourceRow, int sourceCol, int destRow, int destCol){
+        ChessViewSquare viewSquareSource = getChessViewSquare(sourceRow, sourceCol);
+        ChessViewSquare viewSquareDest = getChessViewSquare(destRow, destCol);
+        viewSquareDest.setIcon(viewSquareSource.getIcon());
+        viewSquareSource.setIcon(null);
+    }
+
     public void initViewBoard(ActionListener listener) {
         loadDefaultIcons();
-
         boolean wasTheLastBlack = true;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -68,7 +85,8 @@ public class ChessViewBoard {
 
     private void setSquareColor(int i, int j, boolean wasTheLastBlack){
         Color squareColor = wasTheLastBlack ?  whiteSquareColor : blackSquareColor;
-        chessSquares[i][j].setColorOfTheSquare(squareColor);
+        chessSquares[i][j].setDisplayingColorOfSquare(squareColor);
+        chessSquares[i][j].setColorOfSquare(wasTheLastBlack ? ColorOfSquare.WHITE : ColorOfSquare.BLACK);
     }
 
     private void setPiecesImageIcons(){
@@ -111,24 +129,19 @@ public class ChessViewBoard {
     }
 
     private void loadDefaultIcons(){
-        String runtimePath = ChessViewBoard.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        int i = runtimePath.lastIndexOf("/app/");
-        String pathToDefaultIcons = runtimePath.substring(0, i);
-        pathToDefaultIcons += "/app/images/";
 
+        whitePiecesIcons[0] = new ImageIcon(this.getClass().getResource("/DefaultPieces/pawn_white.png"));
+        whitePiecesIcons[1] = new ImageIcon(this.getClass().getResource("/DefaultPieces/rook_white.png"));
+        whitePiecesIcons[2] = new ImageIcon(this.getClass().getResource("/DefaultPieces/knight_white.png"));
+        whitePiecesIcons[3] = new ImageIcon(this.getClass().getResource("/DefaultPieces/bishop_white.png"));
+        whitePiecesIcons[4] = new ImageIcon(this.getClass().getResource("/DefaultPieces/king_white.png"));
+        whitePiecesIcons[5] = new ImageIcon(this.getClass().getResource("/DefaultPieces/queen_white.png"));
 
-        whitePiecesIcons[0] = new ImageIcon(pathToDefaultIcons + "pawn_white.png");
-        whitePiecesIcons[1] = new ImageIcon(pathToDefaultIcons + "rook_white.png");
-        whitePiecesIcons[2] = new ImageIcon(pathToDefaultIcons + "knight_white.png");
-        whitePiecesIcons[3] = new ImageIcon(pathToDefaultIcons + "bishop_white.png");
-        whitePiecesIcons[4] = new ImageIcon(pathToDefaultIcons + "king_white.png");
-        whitePiecesIcons[5] = new ImageIcon(pathToDefaultIcons + "queen_white.png");
-
-        blackPiecesIcons[0] = new ImageIcon(pathToDefaultIcons + "pawn_black.png");
-        blackPiecesIcons[1] = new ImageIcon(pathToDefaultIcons + "rook_black.png");
-        blackPiecesIcons[2] = new ImageIcon(pathToDefaultIcons + "knight_black.png");
-        blackPiecesIcons[3] = new ImageIcon(pathToDefaultIcons + "bishop_black.png");
-        blackPiecesIcons[4] = new ImageIcon(pathToDefaultIcons + "king_black.png");
-        blackPiecesIcons[5] = new ImageIcon(pathToDefaultIcons + "queen_black.png");
+        blackPiecesIcons[0] = new ImageIcon(this.getClass().getResource("/DefaultPieces/pawn_black.png"));
+        blackPiecesIcons[1] = new ImageIcon(this.getClass().getResource("/DefaultPieces/rook_black.png"));
+        blackPiecesIcons[2] = new ImageIcon(this.getClass().getResource("/DefaultPieces/knight_black.png"));
+        blackPiecesIcons[3] = new ImageIcon(this.getClass().getResource("/DefaultPieces/bishop_black.png"));
+        blackPiecesIcons[4] = new ImageIcon(this.getClass().getResource("/DefaultPieces/king_black.png"));
+        blackPiecesIcons[5] = new ImageIcon(this.getClass().getResource("/DefaultPieces/queen_black.png"));
     }
 }

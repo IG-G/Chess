@@ -2,16 +2,16 @@ package Model;
 
 import Pieces.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ChessModelBoard {
-    private final int ROWS = 8;
-    private final int COLUMNS = 8;
     ChessModelSquare[][] chessBoard;
     boolean hasGameFinished = false;
+    boolean isKingUnderCheck = false;
 
     public ChessModelBoard(){
+        int COLUMNS = 8;
+        int ROWS = 8;
         chessBoard = new ChessModelSquare[ROWS][COLUMNS];
         for(int i = 0; i < ROWS; i++){
             for(int j = 0; j < COLUMNS; j++){
@@ -20,7 +20,7 @@ public class ChessModelBoard {
         }
     }
 
-    public ChessModelSquare getChessBoard(int col, int row) {
+    public ChessModelSquare getChessModelSquare(int col, int row) {
         return chessBoard[row][col];
     }
 
@@ -32,6 +32,13 @@ public class ChessModelBoard {
         return hasGameFinished;
     }
 
+    public boolean isKingUnderCheck() {
+        return isKingUnderCheck;
+    }
+
+    public void setKingUnderCheck(boolean kingUnderCheck) {
+        isKingUnderCheck = kingUnderCheck;
+    }
 
     private boolean isPinned(ChessModelSquare source) {
         //TODO
@@ -40,11 +47,51 @@ public class ChessModelBoard {
 
     public List<ChessModelSquare> getLegalPossibleMoves(ChessModelSquare source) {
         List<ChessModelSquare> possibleMoves;
+        if(isKingUnderCheck){
+            if(!(source.getPiece() instanceof King))
+                return null;
+        }
         if(isPinned(source))
             return null;
         possibleMoves = source.getPiece().checkPossibleMoves(source, chessBoard);
         return possibleMoves;
     }
+
+    public void makeMove(ChessModelSquare source, ChessModelSquare destination, ColorOfPiece colorOnMove){
+        destination.setPiece(source.getPiece());
+        source.setPiece(null);
+        if(isKingUnderCheck){
+
+        }
+        if(checkIfKingUnderCheck(destination, colorOnMove)){
+            isKingUnderCheck = true;
+        }
+    }
+
+    private boolean checkIfKingUnderCheck(ChessModelSquare lastMove, ColorOfPiece colorOnMove){
+        List<ChessModelSquare> attackLines = getLegalPossibleMoves(lastMove);
+        ChessModelSquare kingPosition;
+        kingPosition = getKingPosition(colorOnMove);
+        for (ChessModelSquare square: attackLines) {
+            if(square == kingPosition){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private ChessModelSquare getKingPosition(ColorOfPiece color){
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(chessBoard[i][j].getPiece() != null){
+                    if(chessBoard[i][j].getPiece() instanceof King && chessBoard[i][j].getPiece().getColor() == color)
+                        return chessBoard[i][j];
+                }
+            }
+        }
+        return null;
+    }
+
     public void initPieces(){
         for(int i = 0; i < 8; i++){
             chessBoard[1][i].setPiece(new BlackPawn());
