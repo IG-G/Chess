@@ -14,6 +14,7 @@ public class ChessViewBoard {
     final Color DEFAULT_COLOR_WHITE = Color.GRAY;
     final Color DEFAULT_COLOR_BLACK = Color.DARK_GRAY;
     final Color DEFAULT_COLOR_POSSIBLE_MOVE = Color.LIGHT_GRAY;
+    final Color DEFAULT_COLOR_CHECK_SQUARE = Color.ORANGE;
 
     ChessViewSquare[][] chessSquares; //representation of board 8x8
     Icon[] whitePiecesIcons, blackPiecesIcons;
@@ -22,6 +23,7 @@ public class ChessViewBoard {
     Container frame;
 
     ChessViewSquare[] possibleMovesSquares = null;
+    ChessViewSquare kingUnderCheck;
 
     public ChessViewBoard(Container frame) {
         this.frame = frame;
@@ -60,6 +62,26 @@ public class ChessViewBoard {
         ChessViewSquare viewSquareDest = getChessViewSquare(destRow, destCol);
         viewSquareDest.setIcon(viewSquareSource.getIcon());
         viewSquareSource.setIcon(null);
+    }
+
+    public void makePromotion(){
+        //TODO
+
+    }
+
+    public void setKingUnderCheck(int row, int col){
+        chessSquares[row][col].setBackground(DEFAULT_COLOR_CHECK_SQUARE);
+        kingUnderCheck = chessSquares[row][col];
+    }
+
+    public void cleanKingUnderCheck(){
+        if(kingUnderCheck == null)
+            return;
+        if(kingUnderCheck.getColorOfSquare() == ColorOfSquare.BLACK)
+            kingUnderCheck.setBackground(DEFAULT_COLOR_BLACK);
+        else
+            kingUnderCheck.setBackground(DEFAULT_COLOR_WHITE);
+        kingUnderCheck = null;
     }
 
     public void initViewBoard(ActionListener listener) {

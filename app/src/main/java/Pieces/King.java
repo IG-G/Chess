@@ -7,7 +7,6 @@ import java.util.List;
 //TODO BLACK KING DOES NOT WORK PROP WITH CATSLE
 public class King implements ChessPiece {
     private boolean canCastle = true;
-    private boolean isUnderCheck = false;
     private final ColorOfPiece color;
 
     public King(ColorOfPiece color){
@@ -19,9 +18,29 @@ public class King implements ChessPiece {
         return color;
     }
 
+    public void setCanCastle(boolean canCastle) {
+        this.canCastle = canCastle;
+    }
+
+    public boolean isCanCastle() {
+        return canCastle;
+    }
+
     @Override
     public List<ChessModelSquare> checkPossibleMoves(ChessModelSquare source, ChessModelSquare[][] board) {
         List<ChessModelSquare> possibleMoves = new ArrayList<ChessModelSquare>();
+        checkMovesAround(source, board, possibleMoves);
+        if (color == ColorOfPiece.WHITE){
+            checkShortCastle(board, possibleMoves, 7);
+            checkLongCastle(board, possibleMoves, 7);
+        }else{
+            checkShortCastle(board, possibleMoves, 0);
+            checkLongCastle(board, possibleMoves, 0);
+        }
+        return possibleMoves;
+    }
+
+    private void checkMovesAround(ChessModelSquare source, ChessModelSquare[][] board, List<ChessModelSquare> possibleMoves){
         for(int i = -1; i < 2; i++) {
             for(int j = -1; j < 2; j++){
                 if(i == 0 && j == 0)
@@ -30,25 +49,24 @@ public class King implements ChessPiece {
                     possibleMoves.add(board[j + source.getY()][i + source.getX()]);
             }
         }
-        possibleMoves.removeIf(square -> square.getPiece() != null && square.getPiece().getColor() == color);
+        possibleMoves.removeIf(square -> square.getPiece() != null && square.getPiece().getColor() == getColor());
+    }
+
+    private void checkShortCastle(ChessModelSquare[][] board, List<ChessModelSquare> possibleMoves, int row){
         //TODO check collision -> moze po roszadach aby nie duyblowac sprawdzania
         //short castle TODO check check collision during castle
-        if(board[7][7].getPiece() != null && canCastle && board[7][5].getPiece() == null && board[7][6].getPiece() == null){
-            if(board[7][7].getPiece() instanceof Rook)
-                possibleMoves.add(board[7][6]);
+        if(board[row][7].getPiece() != null && canCastle && board[row][5].getPiece() == null && board[row][6].getPiece() == null){
+            if(board[row][7].getPiece() instanceof Rook && !((Rook) board[row][7].getPiece()).wasMoved())
+                possibleMoves.add(board[row][6]);
         }
-        //long castle TODO check check collision during castle
-        if(board[7][0].getPiece() != null && canCastle && board[7][3].getPiece() == null &&
-           board[7][2].getPiece() == null && board[7][1].getPiece() == null){
-            try{
-                Rook rook = (Rook)board[7][0].getPiece();
-                if(!rook.wasMoved())
-                    possibleMoves.add(board[7][2]);
+    }
 
-            } catch (Exception e) {
-                //nothing to do here
-            }
+    private void checkLongCastle(ChessModelSquare[][] board, List<ChessModelSquare> possibleMoves, int row){
+        //long castle TODO check check collision during castle
+        if(board[row][0].getPiece() != null && canCastle && board[row][3].getPiece() == null &&
+                board[row][2].getPiece() == null && board[row][1].getPiece() == null){
+            if(board[row][0].getPiece() instanceof Rook && !((Rook) board[row][0].getPiece()).wasMoved())
+                possibleMoves.add(board[row][2]);
         }
-        return possibleMoves;
     }
 }

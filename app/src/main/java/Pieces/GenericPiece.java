@@ -46,25 +46,37 @@ public class GenericPiece implements ChessPiece{
             for(int i = square.getX() + 1, j = square.getY() + 1; i < 8 && j < 8; i++, j++)
                 if (board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
-                else
+                else {
+                    if(board[j][i].getPiece().getColor() != getColor())
+                        possibleMoves.add(board[j][i]);
                     break;
+                }
             for(int i = square.getX() - 1, j = square.getY() - 1; i >= 0 && j >= 0; i--, j--)
                 if(board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
-                else
+                else {
+                    if (board[j][i].getPiece().getColor() != getColor())
+                        possibleMoves.add(board[j][i]);
                     break;
+                }
         }
         if(rightDiagonal){
             for(int i = square.getX() - 1, j = square.getY() + 1; i >= 0 && j < 8; i--, j++)
                 if (board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
-                else
+                else{
+                    if (board[j][i].getPiece().getColor() != getColor())
+                        possibleMoves.add(board[j][i]);
                     break;
+                }
             for(int i = square.getX() + 1, j = square.getY() - 1; i < 8 && j >= 0; i++, j--)
                 if(board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
-                else
+                else {
+                    if(board[j][i].getPiece().getColor() != getColor())
+                        possibleMoves.add(board[j][i]);
                     break;
+                }
         }
 
         if(jumpMoves != null) {

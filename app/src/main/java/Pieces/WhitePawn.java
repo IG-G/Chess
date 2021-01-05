@@ -21,19 +21,37 @@ public class WhitePawn implements ChessPiece {
         this.enPassant = enPassant;
     }
 
-    @Override
-    public List<ChessModelSquare> checkPossibleMoves(ChessModelSquare source, ChessModelSquare[][] board) {
-        List<ChessModelSquare> possibleMoves = new ArrayList<ChessModelSquare>();
-        if(source.getX() - 1 >= 0) {
+    public void checkOnlyAttackMoves(ChessModelSquare source, ChessModelSquare[][] board, List<ChessModelSquare> possibleMoves) {
+        if(source.getY() == 0)
+            return;
+        if (source.getX() - 1 >= 0) {
             if (source.getX() != 0 && board[source.getY() - 1][source.getX() - 1].getPiece() != null &&
                     board[source.getY() - 1][source.getX() - 1].getPiece().getColor() != color) //check captures on right
                 possibleMoves.add(board[source.getY() - 1][source.getX() - 1]);
         }
-        if(source.getX() + 1 < 8) {
+        if (source.getX() + 1 < 8) {
             if (source.getX() != 7 && board[source.getY() - 1][source.getX() + 1].getPiece() != null &&
                     board[source.getY() - 1][source.getX() + 1].getPiece().getColor() != color) //check captures on left
                 possibleMoves.add(board[source.getY() - 1][source.getX() + 1]);
         }
+        if (source.getY() == 3) {
+            if (source.getX() + 1 < 8 && board[3][source.getX() + 1].getPiece() != null &&
+                    board[3][source.getX() + 1].getPiece() instanceof BlackPawn &&
+                    ((BlackPawn) board[3][source.getX() + 1].getPiece()).isEnPassant()) {
+                possibleMoves.add(board[2][source.getX() + 1]);
+            }
+            if(source.getX() - 1 >= 0 && board[3][source.getX() - 1].getPiece() != null &&
+                    board[3][source.getX() - 1].getPiece() instanceof BlackPawn &&
+                    ((BlackPawn) board[3][source.getX() - 1].getPiece()).isEnPassant()) {
+                possibleMoves.add(board[2][source.getX() - 1]);
+            }
+        }
+    }
+
+    @Override
+    public List<ChessModelSquare> checkPossibleMoves(ChessModelSquare source, ChessModelSquare[][] board) {
+        List<ChessModelSquare> possibleMoves = new ArrayList<ChessModelSquare>();
+        checkOnlyAttackMoves(source, board, possibleMoves);
         if(source.getY() != 0 && board[source.getY() - 1][source.getX()].getPiece() == null) //check normal move
             possibleMoves.add(board[source.getY() - 1][source.getX()]);
         if(source.getY() == 6 && board[source.getY() - 1][source.getX()].getPiece() == null
