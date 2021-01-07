@@ -51,6 +51,7 @@ public class ChessViewSquare extends JButton {
 
     public void setPieceIcon(Icon icon) {
         pieceIcon = icon;
+        setIcon(pieceIcon);
     }
     public Icon getImageIcon() {
         return pieceIcon;

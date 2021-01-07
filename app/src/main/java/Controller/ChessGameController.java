@@ -99,30 +99,36 @@ public class ChessGameController {
                     boardView.makeMove(rookSquare.getY(), rookSquare.getX(), squareAfterCastle.getY(), squareAfterCastle.getX());
                     boardModel.setLongCastleHappened(false);
                 }
+
+                //segment en passant
+                if(boardModel.didEnPassantHappened()){
+                    if(destinationSquare.getY() == 2){
+                        boardView.getChessViewSquare(3, destinationSquare.getX()).setPieceIcon(null);
+                    }else{
+                        boardView.getChessViewSquare(4, destinationSquare.getX()).setPieceIcon(null);
+                    }
+                    boardModel.setEnPassantHappened(false);
+                }
+                //promotion of pawn
+                if(destinationSquare.getY() == 0 && destinationSquare.getPiece() instanceof WhitePawn){
+                    ChessViewSquare promotionSquare = boardView.getChessViewSquare(destinationSquare.getY(), destinationSquare.getX());
+                    int chosenOption = boardView.makePromotion(promotionSquare);
+                    boardModel.makePromotion(destinationSquare, chosenOption);
+                }
+                if(destinationSquare.getY() == 7 && destinationSquare.getPiece() instanceof BlackPawn){
+                    ChessViewSquare promotionSquare = boardView.getChessViewSquare(destinationSquare.getY(), destinationSquare.getX());
+                    int chosenOption = boardView.makePromotion(promotionSquare);
+                    boardModel.makePromotion(destinationSquare, chosenOption);
+                }
+
+                //check segment
                 if(boardModel.isKingUnderCheck()){
-                    boardView.cleanKingUnderCheck(); // in case of check during defence
+                    boardView.cleanKingUnderCheck(); // in case of checking the other king during defence
                     ColorOfPiece color = colorOnMove == ColorOfPiece.WHITE ? ColorOfPiece.BLACK : ColorOfPiece.WHITE;
                     ChessModelSquare kingSquare = boardModel.getKingPosition(color);
                     boardView.setKingUnderCheck(kingSquare.getY(), kingSquare.getX());
                 }else{
                     boardView.cleanKingUnderCheck();
-                }
-                //segment en passant
-                if(destinationSquare.getPiece() instanceof WhitePawn && destinationSquare.getY() == 2 &&
-                        boardModel.getChessModelSquare(destinationSquare.getX(), 3).getPiece() instanceof BlackPawn &&
-                        ((BlackPawn) boardModel.getChessModelSquare(destinationSquare.getX(), 3).getPiece()).isEnPassant()){
-                    boardView.getChessViewSquare(3, destinationSquare.getX()).setIcon(null);
-                    boardModel.getChessModelSquare(destinationSquare.getX(), 3).setPiece(null);
-                }
-                if(destinationSquare.getPiece() instanceof BlackPawn && destinationSquare.getY() == 5 &&
-                        boardModel.getChessModelSquare(destinationSquare.getX(), 4).getPiece() instanceof WhitePawn &&
-                        ((WhitePawn) boardModel.getChessModelSquare(destinationSquare.getX(), 4).getPiece()).isEnPassant()){
-                    boardView.getChessViewSquare(4, destinationSquare.getX()).setIcon(null);
-                    boardModel.getChessModelSquare(destinationSquare.getX(), 4).setPiece(null);
-                }
-                //promotion of pawn
-                if(destinationSquare.getY() == 0 && destinationSquare.getPiece() instanceof WhitePawn){
-                    boardView.makePromotion();
                 }
                 return true;
             }

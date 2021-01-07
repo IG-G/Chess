@@ -4,10 +4,11 @@ import Model.ChessModelSquare;
 
 import java.util.ArrayList;
 import java.util.List;
-//TODO BLACK KING DOES NOT WORK PROP WITH CATSLE
+
 public class King implements ChessPiece {
     private boolean canCastle = true;
     private final ColorOfPiece color;
+    private boolean isChecked = false;
 
     public King(ColorOfPiece color){
         this.color = color;
@@ -16,6 +17,10 @@ public class King implements ChessPiece {
     @Override
     public ColorOfPiece getColor(){
         return color;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     public void setCanCastle(boolean canCastle) {
@@ -53,19 +58,16 @@ public class King implements ChessPiece {
     }
 
     private void checkShortCastle(ChessModelSquare[][] board, List<ChessModelSquare> possibleMoves, int row){
-        //TODO check collision -> moze po roszadach aby nie duyblowac sprawdzania
-        //short castle TODO check check collision during castle
         if(board[row][7].getPiece() != null && canCastle && board[row][5].getPiece() == null && board[row][6].getPiece() == null){
-            if(board[row][7].getPiece() instanceof Rook && !((Rook) board[row][7].getPiece()).wasMoved())
+            if(board[row][7].getPiece() instanceof Rook && !((Rook) board[row][7].getPiece()).wasMoved() && !isChecked)
                 possibleMoves.add(board[row][6]);
         }
     }
 
     private void checkLongCastle(ChessModelSquare[][] board, List<ChessModelSquare> possibleMoves, int row){
-        //long castle TODO check check collision during castle
         if(board[row][0].getPiece() != null && canCastle && board[row][3].getPiece() == null &&
                 board[row][2].getPiece() == null && board[row][1].getPiece() == null){
-            if(board[row][0].getPiece() instanceof Rook && !((Rook) board[row][0].getPiece()).wasMoved())
+            if(board[row][0].getPiece() instanceof Rook && !((Rook) board[row][0].getPiece()).wasMoved() && !isChecked)
                 possibleMoves.add(board[row][2]);
         }
     }

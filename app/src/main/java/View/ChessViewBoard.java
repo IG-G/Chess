@@ -64,9 +64,45 @@ public class ChessViewBoard {
         viewSquareSource.setIcon(null);
     }
 
-    public void makePromotion(){
-        //TODO
+    public int makePromotion(ChessViewSquare promotionSquare){
+        Object[] options = {
+                "Queen",
+                "Rook",
+                "Bishop",
+                "Knight"};
+        int chosenOption;
+        if(promotionSquare.getPosYOnBoard() == 0)
+            chosenOption = makeColorPromotion(promotionSquare, options, whitePiecesIcons);
+        else
+            chosenOption = makeColorPromotion(promotionSquare, options, blackPiecesIcons);
+        return chosenOption;
+    }
 
+    public int makeColorPromotion(ChessViewSquare promotionSquare, Object[] options, Icon[] icons){
+
+        int chosenOption = JOptionPane.showOptionDialog(frame,
+                "Promote your pawn to:",
+                "Promotion",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                icons[0],
+                options,
+                options[0]);
+        switch(chosenOption){
+            case 0:
+                promotionSquare.setPieceIcon(icons[5]);
+                break;
+            case 1:
+                promotionSquare.setPieceIcon(icons[1]);
+                break;
+            case 2:
+                promotionSquare.setPieceIcon(icons[3]);
+                break;
+            case 3:
+                promotionSquare.setPieceIcon(icons[2]);
+                break;
+        }
+        return chosenOption;
     }
 
     public void setKingUnderCheck(int row, int col){

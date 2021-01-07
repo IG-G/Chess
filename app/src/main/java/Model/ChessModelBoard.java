@@ -11,6 +11,7 @@ public class ChessModelBoard {
     boolean kingUnderCheck = false;
     boolean shortCastleHappened = false;
     boolean longCastleHappened = false;
+    boolean enPassantHappened = false;
 
     public ChessModelBoard(){
         int COLUMNS = 8;
@@ -44,9 +45,15 @@ public class ChessModelBoard {
     public void setShortCastleHappened(boolean shortCastleHappened){
         this.shortCastleHappened = shortCastleHappened;
     }
-
     public void setLongCastleHappened(boolean longCastleHappened) {
         this.longCastleHappened = longCastleHappened;
+    }
+    public boolean didEnPassantHappened(){
+        return enPassantHappened;
+    }
+
+    public void setEnPassantHappened(boolean enPassantHappened) {
+        this.enPassantHappened = enPassantHappened;
     }
 
     public boolean isKingUnderCheck() {
@@ -93,17 +100,14 @@ public class ChessModelBoard {
         return possibleMoves;
     }
 
-    public void makeMove(ChessModelSquare source, ChessModelSquare destination, ColorOfPiece colorOnMove){
+    public void makeMove(ChessModelSquare source, ChessModelSquare destination, ColorOfPiece colorOnMove) {
         destination.setPiece(source.getPiece());
         source.setPiece(null);
-        if(kingUnderCheck){
+        if (kingUnderCheck) {
             kingUnderCheck = false; //otherwise end of game
+            ChessModelSquare king = getKingPosition(colorOnMove);
+            ((King) king.getPiece()).setChecked(false);
         }
-        ColorOfPiece colorOfCheckedKing = colorOnMove == ColorOfPiece.WHITE ? ColorOfPiece.BLACK : ColorOfPiece.WHITE;
-        ChessModelSquare[] squaresAttackingKing = checkIsKingUnderCheck(colorOfCheckedKing);
-        if(squaresAttackingKing.length != 0)
-            kingUnderCheck = true;
-
         //castle handling
         if(destination.getPiece() instanceof King && ((King) destination.getPiece()).isCanCastle()){
             King king = (King)(destination.getPiece());
@@ -127,7 +131,7 @@ public class ChessModelBoard {
             rook.setWasMoved(true);
         }
 
-        //segment for en passant
+        //segment for en passant variables
         clearAllEnPassant(colorOnMove);
         if(destination.getPiece() instanceof WhitePawn){
             if(destination.getY() == 4 && source.getY() == 6)
@@ -136,6 +140,19 @@ public class ChessModelBoard {
         if(destination.getPiece() instanceof BlackPawn){
             if(destination.getY() == 3 && source.getY() == 1)
                 ((BlackPawn) destination.getPiece()).setEnPassant(true);
+        }
+
+        //segment for en passant moves
+        if(makeEnPassantMove(destination)){
+            enPassantHappened = true;
+        }
+
+        ColorOfPiece colorOfCheckedKing = colorOnMove == ColorOfPiece.WHITE ? ColorOfPiece.BLACK : ColorOfPiece.WHITE;
+        ChessModelSquare[] squaresAttackingKing = checkIsKingUnderCheck(colorOfCheckedKing);
+        if (squaresAttackingKing.length != 0){
+            kingUnderCheck = true;
+            ChessModelSquare king = getKingPosition(colorOfCheckedKing);
+            ((King)king.getPiece()).setChecked(true);
         }
     }
 
@@ -157,23 +174,55 @@ public class ChessModelBoard {
         List<ChessModelSquare> toRet = new ArrayList<>();
         for(ChessModelSquare destination: possibleMoves){
             //make move
+            //TODO enpassant, promocja
+
             ChessPiece oldDestPiece = destination.getPiece();
             destination.setPiece(source.getPiece());
             source.setPiece(null);
+            boolean wasEnPassantMade = makeEnPassantMove(destination);
+
 
             //check whether king is still checked
             ChessModelSquare[] checks;
             checks = checkIsKingUnderCheck(destination.getPiece().getColor());
 
             //undo move
+            if(wasEnPassantMade) {
+                undoEnPassant(destination);
+            }
             source.setPiece(destination.getPiece());
             destination.setPiece(oldDestPiece);
-
             if(checks.length == 0){
                 toRet.add(destination);
             }
         }
         return toRet;
+    }
+
+    private void undoEnPassant(ChessModelSquare destination){
+        if(destination.getY() == 2){
+            chessBoard[3][destination.getX()].setPiece(new BlackPawn());
+            ((BlackPawn)chessBoard[3][destination.getX()].getPiece()).setEnPassant(true);
+        }else{
+            chessBoard[4][destination.getX()].setPiece(new WhitePawn());
+            ((WhitePawn)chessBoard[4][destination.getX()].getPiece()).setEnPassant(true);
+        }
+    }
+
+    private boolean makeEnPassantMove(ChessModelSquare destination) {
+        if(destination.getPiece() instanceof WhitePawn && destination.getY() == 2 &&
+                chessBoard[3][destination.getX()].getPiece() instanceof BlackPawn &&
+                ((BlackPawn) chessBoard[3][destination.getX()].getPiece()).isEnPassant()) {
+            chessBoard[3][destination.getX()].setPiece(null);
+            return true;
+        }
+        if(destination.getPiece() instanceof BlackPawn && destination.getY() == 5 &&
+                chessBoard[4][destination.getX()].getPiece() instanceof WhitePawn &&
+                ((WhitePawn) chessBoard[4][destination.getX()].getPiece()).isEnPassant()){
+            chessBoard[4][destination.getX()].setPiece(null);
+            return true;
+        }
+        return false;
     }
 
     private List<ChessModelSquare> getMovesStoppingCheck(ChessModelSquare source){
@@ -231,6 +280,31 @@ public class ChessModelBoard {
             }
         }
         return null;
+    }
+
+    public void makePromotion(ChessModelSquare promotionSquare, int i){
+        ColorOfPiece color = promotionSquare.getPiece().getColor();
+        switch(i){
+            case 0:
+                promotionSquare.setPiece(createQueen(color));
+                break;
+            case 1:
+                promotionSquare.setPiece(new Rook(color));
+                break;
+            case 2:
+                promotionSquare.setPiece(createBishop(color));
+                break;
+            case 3:
+                promotionSquare.setPiece(createKnight(color));
+                break;
+        }
+        ColorOfPiece kingColor = color == ColorOfPiece.WHITE ? ColorOfPiece.BLACK : ColorOfPiece.WHITE;
+        ChessModelSquare[] squares = checkIsKingUnderCheck(kingColor);
+        if(squares.length != 0){
+            kingUnderCheck = true;
+            ChessModelSquare king = getKingPosition(kingColor);
+            ((King)king.getPiece()).setChecked(true);
+        }
     }
 
     public void initPieces(){
