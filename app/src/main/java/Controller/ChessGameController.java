@@ -28,7 +28,8 @@ public class ChessGameController {
     }
 
     public void initGUI() {
-        frame.initMainFrame();
+        NewGameListener listener = new NewGameListener(this, frame.getFrame());
+        frame.initMainFrame(listener);
     }
 
     public void actionOccurred(ChessViewSquare source) {
@@ -110,12 +111,8 @@ public class ChessGameController {
                     boardModel.setEnPassantHappened(false);
                 }
                 //promotion of pawn
-                if(destinationSquare.getY() == 0 && destinationSquare.getPiece() instanceof WhitePawn){
-                    ChessViewSquare promotionSquare = boardView.getChessViewSquare(destinationSquare.getY(), destinationSquare.getX());
-                    int chosenOption = boardView.makePromotion(promotionSquare);
-                    boardModel.makePromotion(destinationSquare, chosenOption);
-                }
-                if(destinationSquare.getY() == 7 && destinationSquare.getPiece() instanceof BlackPawn){
+                if((destinationSquare.getY() == 0 && destinationSquare.getPiece() instanceof WhitePawn) ||
+                        (destinationSquare.getY() == 7 && destinationSquare.getPiece() instanceof BlackPawn)){
                     ChessViewSquare promotionSquare = boardView.getChessViewSquare(destinationSquare.getY(), destinationSquare.getX());
                     int chosenOption = boardView.makePromotion(promotionSquare);
                     boardModel.makePromotion(destinationSquare, chosenOption);
@@ -130,10 +127,17 @@ public class ChessGameController {
                 }else{
                     boardView.cleanKingUnderCheck();
                 }
+                if(boardModel.hasGameFinished()){
+                    endGame();
+                }
                 return true;
             }
         }
         return false;
+    }
+
+    private void endGame(){
+        boardView.showEndGameInfo(colorOnMove);
     }
 
     public void startNewGame() {

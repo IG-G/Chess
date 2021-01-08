@@ -16,10 +16,11 @@ public class App {
 
         JFrame frame = new JFrame("Szachy");
 
-        AppGUI mainFrame = new AppGUI(frame);
-        ChessViewBoard chessViewBoardView = new ChessViewBoard(frame.getContentPane());
+
+        ChessViewBoard boardView = new ChessViewBoard(frame.getContentPane());
         ChessModelBoard boardModel = new ChessModelBoard();
-        ChessGameController gameController = new ChessGameController(boardModel, chessViewBoardView, mainFrame);
+        AppGUI mainFrame = new AppGUI(frame, boardView);
+        ChessGameController gameController = new ChessGameController(boardModel, boardView, mainFrame);
 
         gameController.initGUI();
         gameController.startNewGame();

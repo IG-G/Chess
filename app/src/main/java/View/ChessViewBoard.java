@@ -1,6 +1,8 @@
 package View;
 
 
+import Pieces.ColorOfPiece;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -20,6 +22,7 @@ public class ChessViewBoard {
     Icon[] whitePiecesIcons, blackPiecesIcons;
     Color whiteSquareColor = DEFAULT_COLOR_WHITE;
     Color blackSquareColor = DEFAULT_COLOR_BLACK;
+    Color colorPossibleMove = DEFAULT_COLOR_POSSIBLE_MOVE;
     Container frame;
 
     ChessViewSquare[] possibleMovesSquares = null;
@@ -36,23 +39,29 @@ public class ChessViewBoard {
         return chessSquares[row][col];
     }
 
-    public Color getDEFAULT_COLOR_POSSIBLE_MOVE() {
-        return DEFAULT_COLOR_POSSIBLE_MOVE;
+    public void setWhiteSquareColor(Color white){
+        whiteSquareColor = white;
+        for (ChessViewSquare[] i: chessSquares) {
+            for (ChessViewSquare j: i) {
+                if(j.getColorOfSquare() == ColorOfSquare.WHITE)
+                    j.setBackground(white);
+            }
+        }
     }
 
     public void setPossibleMovesSquares(ChessViewSquare[] possibleMovesSquares) {
         this.possibleMovesSquares = possibleMovesSquares;
         for (ChessViewSquare square: possibleMovesSquares) {
-            square.setDisplayingColorOfSquare(DEFAULT_COLOR_POSSIBLE_MOVE);
+            square.setDisplayingColorOfSquare(colorPossibleMove);
         }
     }
 
     public void cleanPossibleMovesSquares(){
         for (ChessViewSquare square: possibleMovesSquares) {
             if(square.getColorOfSquare() == ColorOfSquare.WHITE)
-                square.setDisplayingColorOfSquare(DEFAULT_COLOR_WHITE);
+                square.setDisplayingColorOfSquare(whiteSquareColor);
             else
-                square.setDisplayingColorOfSquare(DEFAULT_COLOR_BLACK);
+                square.setDisplayingColorOfSquare(blackSquareColor);
         }
         possibleMovesSquares = null;
     }
@@ -114,10 +123,15 @@ public class ChessViewBoard {
         if(kingUnderCheck == null)
             return;
         if(kingUnderCheck.getColorOfSquare() == ColorOfSquare.BLACK)
-            kingUnderCheck.setBackground(DEFAULT_COLOR_BLACK);
+            kingUnderCheck.setBackground(blackSquareColor);
         else
-            kingUnderCheck.setBackground(DEFAULT_COLOR_WHITE);
+            kingUnderCheck.setBackground(whiteSquareColor);
         kingUnderCheck = null;
+    }
+
+    public void showEndGameInfo(ColorOfPiece winningColor){
+        JOptionPane.showMessageDialog(frame,
+                "CHECK MATE!\nTHE WINNER IS " + winningColor);
     }
 
     public void initViewBoard(ActionListener listener) {

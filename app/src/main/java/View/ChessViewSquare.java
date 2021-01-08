@@ -16,8 +16,10 @@ public class ChessViewSquare extends JButton {
         posYInUI = 0;
         setSize(50, 50);
         pieceIcon = null;
-        setBorderPainted(false);
+        setBorderPainted(true);
         setFocusPainted(false);
+        setPieceIcon(null);
+        setBorder(BorderFactory.createLineBorder(new Color(111, 111, 111), 1));
     }
 
     public ColorOfSquare getColorOfSquare() {

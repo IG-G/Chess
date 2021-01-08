@@ -90,7 +90,7 @@ public class ChessModelBoard {
         }
         possibleMoves = source.getPiece().checkPossibleMoves(source, chessBoard);
         possibleMoves = removeSquares(source, possibleMoves); //remove squares which lead to illegal moves
-        if(source.getPiece() instanceof King){
+        if(source.getPiece() instanceof King && ((King)source.getPiece()).isCanCastle()){
             if(source.getPiece().getColor() == ColorOfPiece.WHITE) {
                 checkIsCastleAvailable(possibleMoves, ColorOfPiece.WHITE);
             }else{
@@ -153,7 +153,23 @@ public class ChessModelBoard {
             kingUnderCheck = true;
             ChessModelSquare king = getKingPosition(colorOfCheckedKing);
             ((King)king.getPiece()).setChecked(true);
+            if(isKingCheckMated(colorOfCheckedKing)){
+                hasGameFinished = true;
+            }
         }
+    }
+
+    private boolean isKingCheckMated(ColorOfPiece color){
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(chessBoard[i][j].getPiece() != null && chessBoard[i][j].getPiece().getColor() == color){
+                    List<ChessModelSquare> moves = getLegalPossibleMoves(chessBoard[i][j]);
+                    if(!moves.isEmpty())
+                        return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void clearAllEnPassant(ColorOfPiece colorOnMove){
@@ -174,8 +190,6 @@ public class ChessModelBoard {
         List<ChessModelSquare> toRet = new ArrayList<>();
         for(ChessModelSquare destination: possibleMoves){
             //make move
-            //TODO enpassant, promocja
-
             ChessPiece oldDestPiece = destination.getPiece();
             destination.setPiece(source.getPiece());
             source.setPiece(null);
