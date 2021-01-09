@@ -2,6 +2,7 @@ package Model;
 
 import Pieces.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,8 @@ public class ChessModelBoard {
     boolean shortCastleHappened = false;
     boolean longCastleHappened = false;
     boolean enPassantHappened = false;
-
+    List<GenericPiece> userWhiteDefinedPieces;
+    List<GenericPiece> userBlackDefinedPieces;
     public ChessModelBoard(){
         int COLUMNS = 8;
         int ROWS = 8;
@@ -22,6 +24,8 @@ public class ChessModelBoard {
                 chessBoard[i][j] = new ChessModelSquare(i, j);
             }
         }
+        userWhiteDefinedPieces = new ArrayList<>();
+        userBlackDefinedPieces = new ArrayList<>();
     }
 
     public ChessModelSquare getChessModelSquare(int col, int row) {
@@ -48,21 +52,26 @@ public class ChessModelBoard {
     public void setLongCastleHappened(boolean longCastleHappened) {
         this.longCastleHappened = longCastleHappened;
     }
-    public boolean didEnPassantHappened(){
-        return enPassantHappened;
-    }
-
-    public void setEnPassantHappened(boolean enPassantHappened) {
-        this.enPassantHappened = enPassantHappened;
-    }
-
+    public boolean didEnPassantHappened(){return enPassantHappened;}
+    public void setEnPassantHappened(boolean enPassantHappened) {this.enPassantHappened = enPassantHappened; }
     public boolean isKingUnderCheck() {
         return kingUnderCheck;
     }
-
     public void setKingUnderCheck(boolean kingUnderCheck) {
         this.kingUnderCheck = kingUnderCheck;
     }
+
+    public GenericPiece getUserDefinedPiece(ColorOfPiece color, int i){
+        if(color == ColorOfPiece.WHITE) {
+            if(!userBlackDefinedPieces.isEmpty())
+                return userWhiteDefinedPieces.get(i);
+        }else{
+            if(!userBlackDefinedPieces.isEmpty())
+                return userBlackDefinedPieces.get(i);
+        }
+        return null;
+    }
+
     //check cannot be proceed when castle's squares are being attack
     private void checkIsCastleAvailable(List<ChessModelSquare> possibleMoves, ColorOfPiece color) {
         int row;
@@ -381,5 +390,27 @@ public class ChessModelBoard {
                 new JumpMove(-1, -2)};
         knight.setJumpMoves(moves);
     return knight;
+    }
+
+    public void createUserPiece(boolean[] variables, ChessModelSquare[] jumpMoves){
+        userWhiteDefinedPieces.add(createColorIndependentUserPiece(ColorOfPiece.WHITE, variables, jumpMoves));
+        userBlackDefinedPieces.add(createColorIndependentUserPiece(ColorOfPiece.BLACK, variables, jumpMoves));
+    }
+
+    private GenericPiece createColorIndependentUserPiece(ColorOfPiece color, boolean[] var, ChessModelSquare[] jumpMoves){
+        GenericPiece userPiece = new GenericPiece(color);
+        userPiece.setLeftDiagonal(var[0]);
+        userPiece.setRightDiagonal(var[1]);
+        userPiece.setLeft(var[2]);
+        userPiece.setRight(var[3]);
+        userPiece.setUp(var[4]);
+        userPiece.setDown(var[5]);
+        //originally piece was placed on ChessBoard[3][3] so lets calculate jump moves from that
+        List<JumpMove> jumps = new ArrayList<>();
+        for(ChessModelSquare square: jumpMoves){
+            jumps.add(new JumpMove(square.getX() - 3, square.getY() - 3));
+        }
+        userPiece.setJumpMoves(jumps.toArray(new JumpMove[0]));
+        return userPiece;
     }
 }

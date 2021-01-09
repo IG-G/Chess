@@ -1,6 +1,5 @@
 package View;
 
-
 import Pieces.ColorOfPiece;
 
 import javax.swing.*;
@@ -41,10 +40,29 @@ public class ChessViewBoard {
 
     public void setWhiteSquareColor(Color white){
         whiteSquareColor = white;
+        updateColorOfSquares(ColorOfSquare.WHITE, white);
+    }
+
+    public void setBlackSquareColor(Color black){
+        blackSquareColor = black;
+        updateColorOfSquares(ColorOfSquare.BLACK, black);
+    }
+
+    public void resetToDefaultColor(ColorOfSquare color){
+        if(color == ColorOfSquare.WHITE){
+            whiteSquareColor = DEFAULT_COLOR_WHITE;
+            updateColorOfSquares(ColorOfSquare.WHITE, DEFAULT_COLOR_WHITE);
+        } else{
+            blackSquareColor = DEFAULT_COLOR_BLACK;
+            updateColorOfSquares(ColorOfSquare.BLACK, DEFAULT_COLOR_BLACK);
+        }
+    }
+
+    private void updateColorOfSquares(ColorOfSquare color, Color newColor){
         for (ChessViewSquare[] i: chessSquares) {
             for (ChessViewSquare j: i) {
-                if(j.getColorOfSquare() == ColorOfSquare.WHITE)
-                    j.setBackground(white);
+                if(j.getColorOfSquare() == color)
+                    j.setBackground(newColor);
             }
         }
     }
@@ -149,6 +167,14 @@ public class ChessViewBoard {
         }
         setPiecesImageIcons();
         frame.setLayout(new GridLayout(8, 8));
+    }
+
+    public void clearPieces(){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                chessSquares[i][j].setPieceIcon(null);
+            }
+        }
     }
 
     private void addSquareToFrame(int i, int j){

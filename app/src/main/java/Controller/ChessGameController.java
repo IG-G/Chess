@@ -9,8 +9,11 @@ import View.AppGUI;
 import View.ChessViewSquare;
 import Pieces.ColorOfPiece;
 
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 
 public class ChessGameController {
@@ -20,6 +23,8 @@ public class ChessGameController {
     ChessModelSquare[] previousPossibleMoves = null;
     ChessModelSquare selectedForMove = null;
     ColorOfPiece colorOnMove = ColorOfPiece.WHITE;
+    boolean isGameWithBot = false;
+    ColorOfPiece humanColor = null;
 
     public ChessGameController(ChessModelBoard model, ChessViewBoard view, AppGUI mainFrame){
         boardModel = model;
@@ -29,7 +34,9 @@ public class ChessGameController {
 
     public void initGUI() {
         NewGameListener listener = new NewGameListener(this, frame.getFrame());
-        frame.initMainFrame(listener);
+        NewPieceListener listener1 = new NewPieceListener(this);
+        CreateCustomGameListener listener2 = new CreateCustomGameListener(this);
+        frame.initMainFrame(listener, listener1, listener2);
     }
 
     public void actionOccurred(ChessViewSquare source) {
@@ -60,8 +67,15 @@ public class ChessGameController {
                         selectedForMove = modelSquare;
                     }
                 }
-            }else
-                colorOnMove = colorOnMove == ColorOfPiece.WHITE ? ColorOfPiece.BLACK : ColorOfPiece.WHITE;
+            }else{
+                if(isGameWithBot) {
+                    colorOnMove = null;
+                    makeBotMove();
+                    colorOnMove = humanColor;
+                } else {
+                    colorOnMove = colorOnMove == ColorOfPiece.WHITE ? ColorOfPiece.BLACK : ColorOfPiece.WHITE;
+                }
+            }
         }
     }
 
@@ -141,9 +155,33 @@ public class ChessGameController {
     }
 
     public void startNewGame() {
+        ((JFrame)(frame.getFrame())).getContentPane().removeAll();
         boardModel.initPieces();
         SquareButtonListener listener = new SquareButtonListener(this);
         boardView.initViewBoard(listener);
+        colorOnMove = ColorOfPiece.WHITE;
+    }
+
+    public void startNewGameWithBot(ColorOfPiece humanColor){
+        isGameWithBot = true;
+        this.humanColor = humanColor;
+    }
+
+    private void makeBotMove(){
+        /*
+        List<ChessModelSquare> possibleMoves = new ArrayList<>();
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                ChessModelSquare square = boardModel.getChessModelSquare(i, j);
+                if(selectSquaresToMove(square)){
+                    boardView.cleanPossibleMovesSquares();
+                    possibleMoves.addAll(Arrays.asList(previousPossibleMoves));
+                }
+            }
+        }
+        Random rand = new Random();
+        int i = rand.nextInt();
+        boardModel.makeMove();*/ //TODO
     }
 }
 

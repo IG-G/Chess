@@ -1,5 +1,7 @@
 package Controller;
 
+import Pieces.ColorOfPiece;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,6 +10,8 @@ import java.awt.event.ActionListener;
 public class NewGameListener implements ActionListener {
     final ChessGameController controller;
     final Component frame;
+    boolean isBotSelected = false;
+    boolean isWhiteSelected = false;
 
     NewGameListener(ChessGameController controller, Component frame){
         this.controller = controller;
@@ -17,12 +21,14 @@ public class NewGameListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JRadioButton botOption = new JRadioButton("Bot");
+        botOption.setSelected(true);
         JRadioButton humanOption = new JRadioButton("Player");
         ButtonGroup opponentOption = new ButtonGroup();
         opponentOption.add(botOption);
         opponentOption.add(humanOption);
 
         JRadioButton white = new JRadioButton("White");
+        white.setSelected(true);
         JRadioButton black = new JRadioButton("Black");
         ButtonGroup colorOption = new ButtonGroup();
         colorOption.add(white);
@@ -40,6 +46,8 @@ public class NewGameListener implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 white.setVisible(true);
                 black.setVisible(true);
+                isBotSelected = !isBotSelected;
+                isWhiteSelected = white.isSelected();
             }
         });
 
@@ -53,6 +61,12 @@ public class NewGameListener implements ActionListener {
                 option,
                 option[0]);
 
+        if(isBotSelected){
+            if(isWhiteSelected)
+                controller.startNewGameWithBot(ColorOfPiece.WHITE);
+            else
+                controller.startNewGameWithBot(ColorOfPiece.BLACK);
+        }
         controller.startNewGame();
     }
 }
