@@ -15,7 +15,12 @@ public class SquareButtonListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         ChessViewSquare source = (ChessViewSquare) e.getSource();
-        if(controller.colorOnMove == controller.humanColor)
+        if(controller.isGameWithBot) {
+            if (controller.colorOnMove == controller.humanColor)
+                controller.actionOccurred(source);
+        }
+        else{
             controller.actionOccurred(source);
+        }
     }
 }

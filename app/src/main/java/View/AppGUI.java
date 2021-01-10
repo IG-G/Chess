@@ -98,6 +98,24 @@ public class AppGUI {
         JMenuItem changePieceIconsOption = new JMenuItem("Change pieces");
         viewMenu.add(changePieceIconsOption);
         menuBar.add(viewMenu);
+        changePieceIconsOption.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[] options = {"Default Pieces", "Another Pieces"};
+                int chosenOption = JOptionPane.showOptionDialog(mainFrame,
+                        "Choose icons for pieces:",
+                        "Piece icons",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[0]);
+                if(chosenOption == 0)
+                    view.updateIcons("DefaultPieces");
+                else
+                    view.updateIcons("NotReallyGoodPieces");
+            }
+        });
 
         JMenuItem createNewPiece = new JMenuItem("Create new piece");
         pieceMenu.add(createNewPiece);

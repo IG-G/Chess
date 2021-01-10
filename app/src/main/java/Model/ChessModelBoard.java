@@ -13,14 +13,13 @@ public class ChessModelBoard {
     boolean shortCastleHappened = false;
     boolean longCastleHappened = false;
     boolean enPassantHappened = false;
+    boolean isStaleMate = false;
     List<GenericPiece> userWhiteDefinedPieces;
     List<GenericPiece> userBlackDefinedPieces;
     public ChessModelBoard(){
-        int COLUMNS = 8;
-        int ROWS = 8;
-        chessBoard = new ChessModelSquare[ROWS][COLUMNS];
-        for(int i = 0; i < ROWS; i++){
-            for(int j = 0; j < COLUMNS; j++){
+        chessBoard = new ChessModelSquare[8][8];
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
                 chessBoard[i][j] = new ChessModelSquare(i, j);
             }
         }
@@ -31,15 +30,9 @@ public class ChessModelBoard {
     public ChessModelSquare getChessModelSquare(int col, int row) {
         return chessBoard[row][col];
     }
-
-    public void setGameFinished(boolean gameFinished) {
-        hasGameFinished = gameFinished;
-    }
-
     public boolean hasGameFinished() {
         return hasGameFinished;
     }
-
     public boolean didShortCastleHappened(){
         return shortCastleHappened;
     }
@@ -57,8 +50,8 @@ public class ChessModelBoard {
     public boolean isKingUnderCheck() {
         return kingUnderCheck;
     }
-    public void setKingUnderCheck(boolean kingUnderCheck) {
-        this.kingUnderCheck = kingUnderCheck;
+    public boolean isStaleMate() {
+        return isStaleMate;
     }
 
     public GenericPiece getUserDefinedPiece(ColorOfPiece color, int i){
@@ -95,6 +88,8 @@ public class ChessModelBoard {
         List<ChessModelSquare> possibleMoves;
         if(kingUnderCheck){
             possibleMoves = getMovesStoppingCheck(source);
+            if(possibleMoves.size() == 0)
+                return null;
             return possibleMoves;
         }
         possibleMoves = source.getPiece().checkPossibleMoves(source, chessBoard);
@@ -106,6 +101,8 @@ public class ChessModelBoard {
                 checkIsCastleAvailable(possibleMoves, ColorOfPiece.BLACK);
             }
         }
+        if(possibleMoves.size() == 0)
+            return null;
         return possibleMoves;
     }
 
@@ -166,6 +163,70 @@ public class ChessModelBoard {
                 hasGameFinished = true;
             }
         }
+        if((!kingUnderCheck && isKingCheckMated(colorOfCheckedKing)) || (isNotEnoughMaterialToMate())){
+            isStaleMate = true;
+            hasGameFinished = true;
+        }
+    }
+
+    private boolean isNotEnoughMaterialToMate(){
+        boolean isOneAttackingWhitePiece = false;
+        boolean isOneAttackingBlackPiece = false;
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                ChessPiece piece = chessBoard[i][j].getPiece();
+                if(piece != null && !(piece instanceof King)){
+                    if(piece instanceof WhitePawn || piece instanceof BlackPawn)
+                        return false;
+                    if(isPieceKnight(chessBoard[i][j]) || isPieceBishop(chessBoard[i][j])) {
+                        if (piece.getColor() == ColorOfPiece.WHITE) {
+                            if (isOneAttackingWhitePiece) //we already had these kind of pieces -> checkmate possible
+                                return false;
+                            else
+                                isOneAttackingWhitePiece = true;
+                        }else{
+                            if (isOneAttackingBlackPiece) //we already had these kind of pieces -> checkmate possible
+                                return false;
+                            else
+                                isOneAttackingBlackPiece = true;
+                        }
+                    }
+                    if(piece instanceof Rook)
+                        return false;
+                    if(isPieceQueen(chessBoard[i][j]))
+                        return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isPieceQueen(ChessModelSquare square){
+        if(square.getPiece() == null || !(square.getPiece() instanceof GenericPiece))
+            return false;
+        GenericPiece piece = (GenericPiece) square.getPiece();
+        if(piece.isLeftDiagonal() && piece.isRightDiagonal() && piece.isLeft() &&
+        piece.isRight() && piece.isUp() && piece.isDown())
+            return true;
+        return false;
+    }
+
+    private boolean isPieceBishop(ChessModelSquare square){
+        if(square.getPiece() == null || !(square.getPiece() instanceof GenericPiece))
+            return false;
+        GenericPiece piece = (GenericPiece) square.getPiece();
+        if(piece.isLeftDiagonal() && piece.isRightDiagonal())
+            return true;
+        return false;
+    }
+
+    private boolean isPieceKnight(ChessModelSquare square){
+        if(square.getPiece() == null || !(square.getPiece() instanceof GenericPiece))
+            return false;
+        GenericPiece piece = (GenericPiece) square.getPiece();
+        if(piece.getJumpMoves() != null)
+            return true;
+        return false;
     }
 
     private boolean isKingCheckMated(ColorOfPiece color){
@@ -173,7 +234,7 @@ public class ChessModelBoard {
             for(int j = 0; j < 8; j++){
                 if(chessBoard[i][j].getPiece() != null && chessBoard[i][j].getPiece().getColor() == color){
                     List<ChessModelSquare> moves = getLegalPossibleMoves(chessBoard[i][j]);
-                    if(!moves.isEmpty())
+                    if(moves != null)
                         return false;
                 }
             }
@@ -192,6 +253,15 @@ public class ChessModelBoard {
                 }
             }
         }
+    }
+
+    public void clearAll(){
+        hasGameFinished = false;
+        kingUnderCheck = false;
+        shortCastleHappened = false;
+        longCastleHappened = false;
+        enPassantHappened = false;
+        isStaleMate = false;
     }
 
     //Make move and check whether check occurred -> remove these squares

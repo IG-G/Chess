@@ -87,8 +87,8 @@ public class ChessViewBoard {
     public void makeMove(int sourceRow, int sourceCol, int destRow, int destCol){
         ChessViewSquare viewSquareSource = getChessViewSquare(sourceRow, sourceCol);
         ChessViewSquare viewSquareDest = getChessViewSquare(destRow, destCol);
-        viewSquareDest.setIcon(viewSquareSource.getIcon());
-        viewSquareSource.setIcon(null);
+        viewSquareDest.setPieceIcon(viewSquareSource.getIcon());
+        viewSquareSource.setPieceIcon(null);
     }
 
     public int makePromotion(ChessViewSquare promotionSquare){
@@ -152,6 +152,10 @@ public class ChessViewBoard {
                 "CHECK MATE!\nTHE WINNER IS " + winningColor);
     }
 
+    public void showTieGameInfo(){
+        JOptionPane.showMessageDialog(frame, "THE GAME IS TIED");
+    }
+
     public void initViewBoard(ActionListener listener) {
         loadDefaultIcons();
         boolean wasTheLastBlack = true;
@@ -189,30 +193,30 @@ public class ChessViewBoard {
 
     private void setPiecesImageIcons(){
         for(int i = 0; i < 8; i++){
-            chessSquares[6][i].setIcon(whitePiecesIcons[0]);
-            chessSquares[1][i].setIcon(blackPiecesIcons[0]);
+            chessSquares[6][i].setPieceIcon(whitePiecesIcons[0]);
+            chessSquares[1][i].setPieceIcon(blackPiecesIcons[0]);
         }
         //setting rooks
-        chessSquares[0][0].setIcon(blackPiecesIcons[1]);
-        chessSquares[0][7].setIcon(blackPiecesIcons[1]);
-        chessSquares[7][0].setIcon(whitePiecesIcons[1]);
-        chessSquares[7][7].setIcon(whitePiecesIcons[1]);
+        chessSquares[0][0].setPieceIcon(blackPiecesIcons[1]);
+        chessSquares[0][7].setPieceIcon(blackPiecesIcons[1]);
+        chessSquares[7][0].setPieceIcon(whitePiecesIcons[1]);
+        chessSquares[7][7].setPieceIcon(whitePiecesIcons[1]);
         //setting knights
-        chessSquares[0][1].setIcon(blackPiecesIcons[2]);
-        chessSquares[0][6].setIcon(blackPiecesIcons[2]);
-        chessSquares[7][1].setIcon(whitePiecesIcons[2]);
-        chessSquares[7][6].setIcon(whitePiecesIcons[2]);
+        chessSquares[0][1].setPieceIcon(blackPiecesIcons[2]);
+        chessSquares[0][6].setPieceIcon(blackPiecesIcons[2]);
+        chessSquares[7][1].setPieceIcon(whitePiecesIcons[2]);
+        chessSquares[7][6].setPieceIcon(whitePiecesIcons[2]);
         //setting bishops
-        chessSquares[0][2].setIcon(blackPiecesIcons[3]);
-        chessSquares[0][5].setIcon(blackPiecesIcons[3]);
-        chessSquares[7][2].setIcon(whitePiecesIcons[3]);
-        chessSquares[7][5].setIcon(whitePiecesIcons[3]);
+        chessSquares[0][2].setPieceIcon(blackPiecesIcons[3]);
+        chessSquares[0][5].setPieceIcon(blackPiecesIcons[3]);
+        chessSquares[7][2].setPieceIcon(whitePiecesIcons[3]);
+        chessSquares[7][5].setPieceIcon(whitePiecesIcons[3]);
         //setting queens
-        chessSquares[0][3].setIcon(blackPiecesIcons[5]);
-        chessSquares[7][3].setIcon(whitePiecesIcons[5]);
+        chessSquares[0][3].setPieceIcon(blackPiecesIcons[5]);
+        chessSquares[7][3].setPieceIcon(whitePiecesIcons[5]);
         //setting kings
-        chessSquares[0][4].setIcon(blackPiecesIcons[4]);
-        chessSquares[7][4].setIcon(whitePiecesIcons[4]);
+        chessSquares[0][4].setPieceIcon(blackPiecesIcons[4]);
+        chessSquares[7][4].setPieceIcon(whitePiecesIcons[4]);
 
     }
 
@@ -227,19 +231,46 @@ public class ChessViewBoard {
     }
 
     private void loadDefaultIcons(){
+    loadIcons("DefaultPieces");
+    }
 
-        whitePiecesIcons[0] = new ImageIcon(this.getClass().getResource("/DefaultPieces/pawn_white.png"));
-        whitePiecesIcons[1] = new ImageIcon(this.getClass().getResource("/DefaultPieces/rook_white.png"));
-        whitePiecesIcons[2] = new ImageIcon(this.getClass().getResource("/DefaultPieces/knight_white.png"));
-        whitePiecesIcons[3] = new ImageIcon(this.getClass().getResource("/DefaultPieces/bishop_white.png"));
-        whitePiecesIcons[4] = new ImageIcon(this.getClass().getResource("/DefaultPieces/king_white.png"));
-        whitePiecesIcons[5] = new ImageIcon(this.getClass().getResource("/DefaultPieces/queen_white.png"));
+    public void updateIcons(String dir) {
+        Icon[] prevWhite = new Icon[6];
+        Icon[] prevBlack = new Icon[6];
+        System.arraycopy(whitePiecesIcons, 0, prevWhite, 0, 6);
+        System.arraycopy(blackPiecesIcons, 0, prevBlack, 0, 6);
+        loadIcons(dir);
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (chessSquares[i][j].getImageIcon() != null) {
+                    for (int k = 0; k < 6; k++) {
+                        if (chessSquares[i][j].getImageIcon().equals(prevWhite[k])) {
+                            chessSquares[i][j].setPieceIcon(whitePiecesIcons[k]);
+                            break;
+                        }
+                        if(chessSquares[i][j].getImageIcon().equals(prevBlack[k])){
+                            chessSquares[i][j].setPieceIcon(blackPiecesIcons[k]);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private void loadIcons(String directory){
 
-        blackPiecesIcons[0] = new ImageIcon(this.getClass().getResource("/DefaultPieces/pawn_black.png"));
-        blackPiecesIcons[1] = new ImageIcon(this.getClass().getResource("/DefaultPieces/rook_black.png"));
-        blackPiecesIcons[2] = new ImageIcon(this.getClass().getResource("/DefaultPieces/knight_black.png"));
-        blackPiecesIcons[3] = new ImageIcon(this.getClass().getResource("/DefaultPieces/bishop_black.png"));
-        blackPiecesIcons[4] = new ImageIcon(this.getClass().getResource("/DefaultPieces/king_black.png"));
-        blackPiecesIcons[5] = new ImageIcon(this.getClass().getResource("/DefaultPieces/queen_black.png"));
+        whitePiecesIcons[0] = new ImageIcon(this.getClass().getResource("/" + directory + "/pawn_white.png"));
+        whitePiecesIcons[1] = new ImageIcon(this.getClass().getResource("/" + directory + "/rook_white.png"));
+        whitePiecesIcons[2] = new ImageIcon(this.getClass().getResource("/" + directory + "/knight_white.png"));
+        whitePiecesIcons[3] = new ImageIcon(this.getClass().getResource("/" + directory + "/bishop_white.png"));
+        whitePiecesIcons[4] = new ImageIcon(this.getClass().getResource("/" + directory + "/king_white.png"));
+        whitePiecesIcons[5] = new ImageIcon(this.getClass().getResource("/" + directory + "/queen_white.png"));
+
+        blackPiecesIcons[0] = new ImageIcon(this.getClass().getResource("/" + directory + "/pawn_black.png"));
+        blackPiecesIcons[1] = new ImageIcon(this.getClass().getResource("/" + directory + "/rook_black.png"));
+        blackPiecesIcons[2] = new ImageIcon(this.getClass().getResource("/" + directory + "/knight_black.png"));
+        blackPiecesIcons[3] = new ImageIcon(this.getClass().getResource("/" + directory + "/bishop_black.png"));
+        blackPiecesIcons[4] = new ImageIcon(this.getClass().getResource("/" + directory + "/king_black.png"));
+        blackPiecesIcons[5] = new ImageIcon(this.getClass().getResource("/" + directory + "/queen_black.png"));
     }
 }

@@ -146,4 +146,8 @@ public class GenericPiece implements ChessPiece{
     public void setRight(boolean right) {
         this.right = right;
     }
+
+    public JumpMove[] getJumpMoves(){
+        return jumpMoves;
+    }
 }

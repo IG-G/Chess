@@ -69,7 +69,6 @@ public class ChessGameController {
                 }
             }else{
                 if(isGameWithBot) {
-                    colorOnMove = null;
                     makeBotMove();
                     colorOnMove = humanColor;
                 } else {
@@ -88,7 +87,6 @@ public class ChessGameController {
             }
             boardView.setPossibleMovesSquares(viewSquaresPossibleToMove.toArray(new ChessViewSquare[0]));
             previousPossibleMoves = possibleMovesFromModel.toArray(new ChessModelSquare[0]);
-
             return true;
         }
         return false;
@@ -151,37 +149,66 @@ public class ChessGameController {
     }
 
     private void endGame(){
-        boardView.showEndGameInfo(colorOnMove);
+        if(!boardModel.isStaleMate()) {
+            boardView.showEndGameInfo(colorOnMove);
+        }else{
+            boardView.showTieGameInfo();
+        }
+        isGameWithBot = false;
     }
 
     public void startNewGame() {
-        ((JFrame)(frame.getFrame())).getContentPane().removeAll();
+        ((JFrame) (frame.getFrame())).getContentPane().removeAll();
         boardModel.initPieces();
+        boardModel.clearAll();
         SquareButtonListener listener = new SquareButtonListener(this);
         boardView.initViewBoard(listener);
         colorOnMove = ColorOfPiece.WHITE;
+        if (isGameWithBot && humanColor == ColorOfPiece.BLACK){
+            makeBotMove();
+            colorOnMove = ColorOfPiece.BLACK;
+        }
     }
 
-    public void startNewGameWithBot(ColorOfPiece humanColor){
+    public void setParamsForNewGameWithBot(ColorOfPiece humanColor){
         isGameWithBot = true;
         this.humanColor = humanColor;
     }
 
     private void makeBotMove(){
-        /*
-        List<ChessModelSquare> possibleMoves = new ArrayList<>();
+        ColorOfPiece botColor = humanColor == ColorOfPiece.WHITE ? ColorOfPiece.BLACK : ColorOfPiece.WHITE;
+        List<List<ChessModelSquare>> possibleMoves = new ArrayList<>();
+        int tailIndex = 0;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
                 ChessModelSquare square = boardModel.getChessModelSquare(i, j);
-                if(selectSquaresToMove(square)){
-                    boardView.cleanPossibleMovesSquares();
-                    possibleMoves.addAll(Arrays.asList(previousPossibleMoves));
+                if(square.getPiece() != null && square.getPiece().getColor() == botColor) {
+                    if (selectSquaresToMove(square)) {
+                        possibleMoves.add(new ArrayList<>());
+                        boardView.cleanPossibleMovesSquares();
+                        possibleMoves.get(tailIndex).add(square);
+                        possibleMoves.get(tailIndex).addAll(Arrays.<ChessModelSquare>asList(previousPossibleMoves));
+                        tailIndex++;
+                    }
                 }
             }
         }
         Random rand = new Random();
-        int i = rand.nextInt();
-        boardModel.makeMove();*/ //TODO
+        int i = rand.nextInt(possibleMoves.size());
+        int j;
+        if(possibleMoves.get(i).size() != 1){
+             j = rand.nextInt(possibleMoves.get(i).size() - 1);
+             j++;
+        }else{
+            j = 1;
+        }
+        ChessModelSquare source = possibleMoves.get(i).get(0);
+        ChessModelSquare dest = possibleMoves.get(i).get(j);
+        selectedForMove = source;
+        possibleMoves.get(i).remove(0);
+        previousPossibleMoves = possibleMoves.get(i).toArray(new ChessModelSquare[0]);
+        makeMove(dest);
+        selectedForMove = null;
     }
 }
 

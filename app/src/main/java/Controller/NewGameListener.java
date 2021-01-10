@@ -10,8 +10,8 @@ import java.awt.event.ActionListener;
 public class NewGameListener implements ActionListener {
     final ChessGameController controller;
     final Component frame;
-    boolean isBotSelected = false;
-    boolean isWhiteSelected = false;
+    boolean isBotSelected = true;
+    boolean isWhiteSelected = true;
 
     NewGameListener(ChessGameController controller, Component frame){
         this.controller = controller;
@@ -39,6 +39,7 @@ public class NewGameListener implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                     white.setVisible(false);
                     black.setVisible(false);
+                    isBotSelected = false;
             }
         });
         botOption.addActionListener(new ActionListener() {
@@ -46,8 +47,15 @@ public class NewGameListener implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 white.setVisible(true);
                 black.setVisible(true);
-                isBotSelected = !isBotSelected;
+                isBotSelected = true;
                 isWhiteSelected = white.isSelected();
+            }
+        });
+
+        black.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isWhiteSelected = false;
             }
         });
 
@@ -63,10 +71,13 @@ public class NewGameListener implements ActionListener {
 
         if(isBotSelected){
             if(isWhiteSelected)
-                controller.startNewGameWithBot(ColorOfPiece.WHITE);
+                controller.setParamsForNewGameWithBot(ColorOfPiece.WHITE);
             else
-                controller.startNewGameWithBot(ColorOfPiece.BLACK);
-        }
+                controller.setParamsForNewGameWithBot(ColorOfPiece.BLACK);
+        }else
+            controller.isGameWithBot = false;
         controller.startNewGame();
+        isWhiteSelected = true;
+        isBotSelected = true;
     }
 }
