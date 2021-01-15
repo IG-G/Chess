@@ -7,10 +7,10 @@ public class ChessModelSquare {
     private final int x;
     private final int y;
 
-    public ChessModelSquare(int i, int j){
+    public ChessModelSquare(int row, int col){
         this.piece = null;
-        x = j;
-        y = i;
+        x = col;
+        y = row;
     }
 
     public ChessPiece getPiece() {
