@@ -27,7 +27,7 @@ public class King implements ChessPiece {
         this.canCastle = canCastle;
     }
 
-    public boolean isCanCastle() {
+    public boolean canCastle() {
         return canCastle;
     }
 

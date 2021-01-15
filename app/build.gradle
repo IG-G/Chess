@@ -30,5 +30,5 @@ test {
 
 application {
     // Define the main class for the application.
-    mainClass = 'pw.proz.App'
+    mainClass = 'Main.App'
 }

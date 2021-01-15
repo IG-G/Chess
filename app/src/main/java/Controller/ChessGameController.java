@@ -3,6 +3,7 @@ package Controller;
 import Model.ChessModelBoard;
 import Model.ChessModelSquare;
 import Pieces.BlackPawn;
+import Pieces.Rook;
 import Pieces.WhitePawn;
 import View.ChessViewBoard;
 import View.AppGUI;
@@ -103,6 +104,7 @@ public class ChessGameController {
                     ChessModelSquare rookSquare = boardModel.getChessModelSquare(7, row);
                     ChessModelSquare squareAfterCastle = boardModel.getChessModelSquare(5, row);
                     boardView.makeMove(rookSquare.getY(), rookSquare.getX(), squareAfterCastle.getY(), squareAfterCastle.getX());
+                    ((Rook)boardModel.getChessModelSquare(5, row).getPiece()).setWasMoved(true);
                     boardModel.setShortCastleHappened(false);
                 }
                 if(boardModel.didLongCastleHappened()){
@@ -110,6 +112,7 @@ public class ChessGameController {
                     ChessModelSquare rookSquare = boardModel.getChessModelSquare(0, row);
                     ChessModelSquare squareAfterCastle = boardModel.getChessModelSquare(3, row);
                     boardView.makeMove(rookSquare.getY(), rookSquare.getX(), squareAfterCastle.getY(), squareAfterCastle.getX());
+                    ((Rook)boardModel.getChessModelSquare(3, row).getPiece()).setWasMoved(true);
                     boardModel.setLongCastleHappened(false);
                 }
 

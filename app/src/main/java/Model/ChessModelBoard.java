@@ -2,7 +2,6 @@ package Model;
 
 import Pieces.*;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +93,7 @@ public class ChessModelBoard {
         }
         possibleMoves = source.getPiece().checkPossibleMoves(source, chessBoard);
         possibleMoves = removeSquares(source, possibleMoves); //remove squares which lead to illegal moves
-        if(source.getPiece() instanceof King && ((King)source.getPiece()).isCanCastle()){
+        if(source.getPiece() instanceof King && ((King)source.getPiece()).canCastle()){
             if(source.getPiece().getColor() == ColorOfPiece.WHITE) {
                 checkIsCastleAvailable(possibleMoves, ColorOfPiece.WHITE);
             }else{
@@ -115,7 +114,7 @@ public class ChessModelBoard {
             ((King) king.getPiece()).setChecked(false);
         }
         //castle handling
-        if(destination.getPiece() instanceof King && ((King) destination.getPiece()).isCanCastle()){
+        if(destination.getPiece() instanceof King && ((King) destination.getPiece()).canCastle()){
             King king = (King)(destination.getPiece());
             int row = king.getColor() == ColorOfPiece.WHITE ? 7 : 0;
             if(destination == chessBoard[row][6]){
