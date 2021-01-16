@@ -6,10 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-
-
-//Class contains board parameters for GUI
-//as well as type of piece on square (in class Square)
 public class ChessViewBoard {
 
     final Color DEFAULT_COLOR_WHITE = Color.GRAY;
@@ -34,34 +30,39 @@ public class ChessViewBoard {
         blackPiecesIcons = new ImageIcon[6];
     }
 
-    public ChessViewSquare getChessViewSquare(int row, int col){
+    public ChessViewSquare getChessViewSquare(int row, int col) {
         return chessSquares[row][col];
     }
 
-    public void setWhiteSquareColor(Color white){
+    public void setWhiteSquareColor(Color white) {
         whiteSquareColor = white;
         updateColorOfSquares(ColorOfSquare.WHITE, white);
     }
 
-    public void setBlackSquareColor(Color black){
+    public void setBlackSquareColor(Color black) {
         blackSquareColor = black;
         updateColorOfSquares(ColorOfSquare.BLACK, black);
     }
 
-    public void resetToDefaultColor(ColorOfSquare color){
-        if(color == ColorOfSquare.WHITE){
+    public void resetToDefaultColor(ColorOfSquare color) {
+        if (color == ColorOfSquare.WHITE) {
             whiteSquareColor = DEFAULT_COLOR_WHITE;
             updateColorOfSquares(ColorOfSquare.WHITE, DEFAULT_COLOR_WHITE);
-        } else{
+        } else {
             blackSquareColor = DEFAULT_COLOR_BLACK;
             updateColorOfSquares(ColorOfSquare.BLACK, DEFAULT_COLOR_BLACK);
         }
     }
 
-    private void updateColorOfSquares(ColorOfSquare color, Color newColor){
-        for (ChessViewSquare[] i: chessSquares) {
-            for (ChessViewSquare j: i) {
-                if(j.getColorOfSquare() == color)
+    public void setKingUnderCheck(int row, int col) {
+        chessSquares[row][col].setBackground(DEFAULT_COLOR_CHECK_SQUARE);
+        kingUnderCheck = chessSquares[row][col];
+    }
+
+    private void updateColorOfSquares(ColorOfSquare color, Color newColor) {
+        for (ChessViewSquare[] i : chessSquares) {
+            for (ChessViewSquare j : i) {
+                if (j.getColorOfSquare() == color)
                     j.setBackground(newColor);
             }
         }
@@ -69,14 +70,14 @@ public class ChessViewBoard {
 
     public void setPossibleMovesSquares(ChessViewSquare[] possibleMovesSquares) {
         this.possibleMovesSquares = possibleMovesSquares;
-        for (ChessViewSquare square: possibleMovesSquares) {
+        for (ChessViewSquare square : possibleMovesSquares) {
             square.setDisplayingColorOfSquare(colorPossibleMove);
         }
     }
 
-    public void cleanPossibleMovesSquares(){
-        for (ChessViewSquare square: possibleMovesSquares) {
-            if(square.getColorOfSquare() == ColorOfSquare.WHITE)
+    public void cleanPossibleMovesSquares() {
+        for (ChessViewSquare square : possibleMovesSquares) {
+            if (square.getColorOfSquare() == ColorOfSquare.WHITE)
                 square.setDisplayingColorOfSquare(whiteSquareColor);
             else
                 square.setDisplayingColorOfSquare(blackSquareColor);
@@ -84,28 +85,28 @@ public class ChessViewBoard {
         possibleMovesSquares = null;
     }
 
-    public void makeMove(int sourceRow, int sourceCol, int destRow, int destCol){
+    public void makeMove(int sourceRow, int sourceCol, int destRow, int destCol) {
         ChessViewSquare viewSquareSource = getChessViewSquare(sourceRow, sourceCol);
         ChessViewSquare viewSquareDest = getChessViewSquare(destRow, destCol);
         viewSquareDest.setPieceIcon(viewSquareSource.getIcon());
         viewSquareSource.setPieceIcon(null);
     }
 
-    public int makePromotion(ChessViewSquare promotionSquare){
+    public int makePromotion(ChessViewSquare promotionSquare) {
         Object[] options = {
                 "Queen",
                 "Rook",
                 "Bishop",
                 "Knight"};
         int chosenOption;
-        if(promotionSquare.getPosYOnBoard() == 0)
+        if (promotionSquare.getPosYOnBoard() == 0)
             chosenOption = makeColorPromotion(promotionSquare, options, whitePiecesIcons);
         else
             chosenOption = makeColorPromotion(promotionSquare, options, blackPiecesIcons);
         return chosenOption;
     }
 
-    public int makeColorPromotion(ChessViewSquare promotionSquare, Object[] options, Icon[] icons){
+    public int makeColorPromotion(ChessViewSquare promotionSquare, Object[] options, Icon[] icons) {
 
         int chosenOption = JOptionPane.showOptionDialog(frame,
                 "Promote your pawn to:",
@@ -115,7 +116,7 @@ public class ChessViewBoard {
                 icons[0],
                 options,
                 options[0]);
-        switch(chosenOption){
+        switch (chosenOption) {
             case 0:
                 promotionSquare.setPieceIcon(icons[5]);
                 break;
@@ -132,27 +133,22 @@ public class ChessViewBoard {
         return chosenOption;
     }
 
-    public void setKingUnderCheck(int row, int col){
-        chessSquares[row][col].setBackground(DEFAULT_COLOR_CHECK_SQUARE);
-        kingUnderCheck = chessSquares[row][col];
-    }
-
-    public void cleanKingUnderCheck(){
-        if(kingUnderCheck == null)
+    public void cleanKingUnderCheck() {
+        if (kingUnderCheck == null)
             return;
-        if(kingUnderCheck.getColorOfSquare() == ColorOfSquare.BLACK)
+        if (kingUnderCheck.getColorOfSquare() == ColorOfSquare.BLACK)
             kingUnderCheck.setBackground(blackSquareColor);
         else
             kingUnderCheck.setBackground(whiteSquareColor);
         kingUnderCheck = null;
     }
 
-    public void showEndGameInfo(ColorOfPiece winningColor){
+    public void showEndGameInfo(ColorOfPiece winningColor) {
         JOptionPane.showMessageDialog(frame,
-                "CHECK MATE!\nTHE WINNER IS " + winningColor);
+                "CHECK MATE!\n" + winningColor + " is the winner!");
     }
 
-    public void showTieGameInfo(){
+    public void showTieGameInfo() {
         JOptionPane.showMessageDialog(frame, "THE GAME IS TIED");
     }
 
@@ -173,7 +169,7 @@ public class ChessViewBoard {
         frame.setLayout(new GridLayout(8, 8));
     }
 
-    public void clearPieces(){
+    public void clearPieces() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 chessSquares[i][j].setPieceIcon(null);
@@ -181,18 +177,18 @@ public class ChessViewBoard {
         }
     }
 
-    private void addSquareToFrame(int i, int j){
+    private void addSquareToFrame(int i, int j) {
         frame.add(chessSquares[i][j]);
     }
 
-    private void setSquareColor(int i, int j, boolean wasTheLastBlack){
-        Color squareColor = wasTheLastBlack ?  whiteSquareColor : blackSquareColor;
+    private void setSquareColor(int i, int j, boolean wasTheLastBlack) {
+        Color squareColor = wasTheLastBlack ? whiteSquareColor : blackSquareColor;
         chessSquares[i][j].setDisplayingColorOfSquare(squareColor);
         chessSquares[i][j].setColorOfSquare(wasTheLastBlack ? ColorOfSquare.WHITE : ColorOfSquare.BLACK);
     }
 
-    private void setPiecesImageIcons(){
-        for(int i = 0; i < 8; i++){
+    private void setPiecesImageIcons() {
+        for (int i = 0; i < 8; i++) {
             chessSquares[6][i].setPieceIcon(whitePiecesIcons[0]);
             chessSquares[1][i].setPieceIcon(blackPiecesIcons[0]);
         }
@@ -223,15 +219,15 @@ public class ChessViewBoard {
     private void initializeSquare(int i, int j, ActionListener listener) {
 
         int posX = chessSquares[i][j].posXInUI + 50 * (i);
-        int posY = chessSquares[i][j].posYInUI+ 50 * (j);
+        int posY = chessSquares[i][j].posYInUI + 50 * (j);
         chessSquares[i][j].setBounds(posX, posY, 50, 50);
         chessSquares[i][j].setPosXonBoard(j);
         chessSquares[i][j].setPosYonBoard(i);
         chessSquares[i][j].addActionListener(listener);
     }
 
-    private void loadDefaultIcons(){
-    loadIcons("DefaultPieces");
+    private void loadDefaultIcons() {
+        loadIcons("DefaultPieces");
     }
 
     public void updateIcons(String dir) {
@@ -248,7 +244,7 @@ public class ChessViewBoard {
                             chessSquares[i][j].setPieceIcon(whitePiecesIcons[k]);
                             break;
                         }
-                        if(chessSquares[i][j].getImageIcon().equals(prevBlack[k])){
+                        if (chessSquares[i][j].getImageIcon().equals(prevBlack[k])) {
                             chessSquares[i][j].setPieceIcon(blackPiecesIcons[k]);
                             break;
                         }
@@ -257,7 +253,8 @@ public class ChessViewBoard {
             }
         }
     }
-    private void loadIcons(String directory){
+
+    private void loadIcons(String directory) {
 
         whitePiecesIcons[0] = new ImageIcon(this.getClass().getResource("/" + directory + "/pawn_white.png"));
         whitePiecesIcons[1] = new ImageIcon(this.getClass().getResource("/" + directory + "/rook_white.png"));

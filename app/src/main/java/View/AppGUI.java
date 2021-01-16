@@ -26,27 +26,27 @@ public class AppGUI {
         return possibleMovesForNewPiece.toArray(new ChessViewSquare[0]);
     }
 
-    public AppGUI(JFrame frame, ChessViewBoard view){
+    public AppGUI(JFrame frame, ChessViewBoard view) {
         mainFrame = frame;
         this.view = view;
         paramsForNewPiece = new boolean[6];
-        for(int i = 0; i < 6; i++)
+        for (int i = 0; i < 6; i++)
             paramsForNewPiece[i] = false;
     }
 
-    public void initMainFrame(ActionListener newGameListener, ActionListener newPieceListener, ActionListener createCustomGame){
-        if(mainFrame.getSize().height == 0 || mainFrame.getSize().width == 0)
+    public void initMainFrame(ActionListener newGameListener, ActionListener newPieceListener, ActionListener createCustomGame) {
+        if (mainFrame.getSize().height == 0 || mainFrame.getSize().width == 0)
             setMainFrameSize(700, 700);
         setMenuBar(newGameListener, newPieceListener, createCustomGame);
         mainFrame.setVisible(true);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public Component getFrame(){
+    public Component getFrame() {
         return mainFrame;
     }
 
-    public void setMainFrameSize(int x, int y){
+    public void setMainFrameSize(int x, int y) {
         mainFrame.setSize(x, y);
     }
 
@@ -59,8 +59,6 @@ public class AppGUI {
         JMenuItem newGameOption = new JMenuItem("Start new game");
         newGameOption.addActionListener(newGameListener);
         gameMenu.add(newGameOption);
-        JMenuItem saveGameIntoPGN = new JMenuItem("Save PGN");
-        gameMenu.add(saveGameIntoPGN);
         menuBar.add(gameMenu);
 
         JMenuItem changeWhiteSquareOption = new JMenuItem("Change color of the white squares");
@@ -110,7 +108,7 @@ public class AppGUI {
                         null,
                         options,
                         options[0]);
-                if(chosenOption == 0)
+                if (chosenOption == 0)
                     view.updateIcons("DefaultPieces");
                 else
                     view.updateIcons("NotReallyGoodPieces");
@@ -122,7 +120,7 @@ public class AppGUI {
         menuBar.add(pieceMenu);
         createNewPiece.addActionListener(newPieceListener);
 
-        JMenuItem createCustom = new JMenuItem("Create custom Game");
+        JMenuItem createCustom = new JMenuItem("Create game with your piece");
         pieceMenu.add(createCustom);
         createCustom.addActionListener(createCustomGame);
 
@@ -134,50 +132,25 @@ public class AppGUI {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                JFrame frame = new JFrame("New piece");
-                newPieceFrame = frame;
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                newPieceFrame = new JFrame("New piece");
                 JPanel board = new JPanel();
-                JRadioButton leftDiagonal = new JRadioButton("Left Diagonal");
-                JRadioButton rightDiagonal = new JRadioButton("Right Diagonal");
-                JRadioButton up = new JRadioButton("Up");
-                JRadioButton down = new JRadioButton("Down");
-                JRadioButton left = new JRadioButton("Left");
-                JRadioButton right = new JRadioButton("Right");
-                JLabel note = new JLabel(" All radio buttons create moves ");
-                JLabel note1 = new JLabel(" from one border to another. ");
-                JLabel note2 = new JLabel(" These are not jump moves. ");
-                JLabel note3 = new JLabel(" Moves selected on board ");
-                JLabel note4 = new JLabel(" are jump moves. ");
-                JButton end = new JButton("Finish");
-                end.addActionListener(endListener);
                 JPanel settings = new JPanel();
-                settings.add(leftDiagonal);
-                settings.add(rightDiagonal);
-                settings.add(up);
-                settings.add(down);
-                settings.add(left);
-                settings.add(right);
-                settings.add(note);
-                settings.add(note1);
-                settings.add(note2);
-                settings.add(note3);
-                settings.add(note4);
-                settings.add(end);
-                settings.setLayout(new BoxLayout(settings, BoxLayout.Y_AXIS));
-                try
-                {
+
+                makeSettingsPanel(settings, endListener);
+
+                try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 possibleMovesForNewPiece = new ArrayList<>();
                 ChessViewBoard boardForNewPiece = new ChessViewBoard(board);
                 boardForNewPiece.initViewBoard(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         ChessViewSquare source = (ChessViewSquare) e.getSource();
-                        for(ChessViewSquare square: possibleMovesForNewPiece) {
+                        for (ChessViewSquare square : possibleMovesForNewPiece) {
                             if (source == square) {
                                 Color color = source.getColorOfSquare() == ColorOfSquare.WHITE ?
                                         boardForNewPiece.whiteSquareColor : boardForNewPiece.blackSquareColor;
@@ -186,61 +159,90 @@ public class AppGUI {
                                 return;
                             }
                         }
-                        if(source == boardForNewPiece.getChessViewSquare(3,3))
+                        if (source == boardForNewPiece.getChessViewSquare(3, 3))
                             return;
                         source.setBackground(boardForNewPiece.colorPossibleMove);
                         possibleMovesForNewPiece.add(source);
                     }
                 });
                 boardForNewPiece.clearPieces();
-                boardForNewPiece.getChessViewSquare(3,3).setPieceIcon(boardForNewPiece.whitePiecesIcons[5]);
+                boardForNewPiece.getChessViewSquare(3, 3).setPieceIcon(boardForNewPiece.whitePiecesIcons[5]);
 
-                frame.add(settings, BorderLayout.EAST);
-                frame.add(board, BorderLayout.CENTER);
-                frame.pack();
-                frame.setLocationByPlatform(true);
-                frame.setVisible(true);
-                frame.setResizable(false);
-                frame.setSize(850, 700);
-
-                leftDiagonal.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        paramsForNewPiece[0] = !paramsForNewPiece[0];
-                    }
-                });
-                rightDiagonal.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        paramsForNewPiece[1] = !paramsForNewPiece[1];
-                    }
-                });
-                left.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        paramsForNewPiece[2] = !paramsForNewPiece[2];
-                    }
-                });
-                right.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        paramsForNewPiece[3] = !paramsForNewPiece[3];
-                    }
-                });
-                up.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        paramsForNewPiece[4] = !paramsForNewPiece[4];
-                    }
-                });
-                down.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        paramsForNewPiece[5] = !paramsForNewPiece[5];
-                    }
-                });
+                newPieceFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                newPieceFrame.add(settings, BorderLayout.EAST);
+                newPieceFrame.add(board, BorderLayout.CENTER);
+                newPieceFrame.pack();
+                newPieceFrame.setLocationByPlatform(true);
+                newPieceFrame.setVisible(true);
+                newPieceFrame.setResizable(false);
+                newPieceFrame.setSize(850, 700);
             }
         });
     }
 
+    private void makeSettingsPanel(JPanel settings, ActionListener endListener) {
+        JRadioButton leftDiagonal = new JRadioButton("Left Diagonal");
+        JRadioButton rightDiagonal = new JRadioButton("Right Diagonal");
+        JRadioButton up = new JRadioButton("Up");
+        JRadioButton down = new JRadioButton("Down");
+        JRadioButton left = new JRadioButton("Left");
+        JRadioButton right = new JRadioButton("Right");
+        JLabel note = new JLabel(" All radio buttons create moves ");
+        JLabel note1 = new JLabel(" from one border to another. ");
+        JLabel note2 = new JLabel(" These are not jump moves. ");
+        JLabel note3 = new JLabel(" Moves selected on board ");
+        JLabel note4 = new JLabel(" are jump moves. ");
+        JButton end = new JButton("Finish");
+        end.addActionListener(endListener);
+
+        settings.add(leftDiagonal);
+        settings.add(rightDiagonal);
+        settings.add(up);
+        settings.add(down);
+        settings.add(left);
+        settings.add(right);
+        settings.add(note);
+        settings.add(note1);
+        settings.add(note2);
+        settings.add(note3);
+        settings.add(note4);
+        settings.add(end);
+        settings.setLayout(new BoxLayout(settings, BoxLayout.Y_AXIS));
+        leftDiagonal.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                paramsForNewPiece[0] = !paramsForNewPiece[0];
+            }
+        });
+        rightDiagonal.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                paramsForNewPiece[1] = !paramsForNewPiece[1];
+            }
+        });
+        left.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                paramsForNewPiece[2] = !paramsForNewPiece[2];
+            }
+        });
+        right.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                paramsForNewPiece[3] = !paramsForNewPiece[3];
+            }
+        });
+        up.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                paramsForNewPiece[4] = !paramsForNewPiece[4];
+            }
+        });
+        down.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                paramsForNewPiece[5] = !paramsForNewPiece[5];
+            }
+        });
+    }
 }

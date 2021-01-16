@@ -5,7 +5,7 @@ import Model.ChessModelSquare;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenericPiece implements ChessPiece{
+public class GenericPiece implements ChessPiece {
     ColorOfPiece color;
     private boolean leftDiagonal = false;
     private boolean rightDiagonal = false;
@@ -22,7 +22,7 @@ public class GenericPiece implements ChessPiece{
     }
 
     @Override
-    public ColorOfPiece getColor(){
+    public ColorOfPiece getColor() {
         return color;
     }
 
@@ -30,29 +30,29 @@ public class GenericPiece implements ChessPiece{
     @Override
     public List<ChessModelSquare> checkPossibleMoves(ChessModelSquare square, ChessModelSquare[][] board) {
         List<ChessModelSquare> possibleMoves = new ArrayList<ChessModelSquare>();
-        if(down) {
+        if (down) {
             checkMovesDown(square, board, possibleMoves);
         }
-        if(up) {
+        if (up) {
             checkMovesUp(square, board, possibleMoves);
         }
-        if(left) {
+        if (left) {
             checkMovesLeft(square, board, possibleMoves);
         }
-        if(right) {
+        if (right) {
             checkMovesRight(square, board, possibleMoves);
         }
-        if(leftDiagonal){
-            for(int i = square.getX() + 1, j = square.getY() + 1; i < 8 && j < 8; i++, j++)
+        if (leftDiagonal) {
+            for (int i = square.getX() + 1, j = square.getY() + 1; i < 8 && j < 8; i++, j++)
                 if (board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
                 else {
-                    if(board[j][i].getPiece().getColor() != getColor())
+                    if (board[j][i].getPiece().getColor() != getColor())
                         possibleMoves.add(board[j][i]);
                     break;
                 }
-            for(int i = square.getX() - 1, j = square.getY() - 1; i >= 0 && j >= 0; i--, j--)
-                if(board[j][i].getPiece() == null)
+            for (int i = square.getX() - 1, j = square.getY() - 1; i >= 0 && j >= 0; i--, j--)
+                if (board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
                 else {
                     if (board[j][i].getPiece().getColor() != getColor())
@@ -60,34 +60,34 @@ public class GenericPiece implements ChessPiece{
                     break;
                 }
         }
-        if(rightDiagonal){
-            for(int i = square.getX() - 1, j = square.getY() + 1; i >= 0 && j < 8; i--, j++)
+        if (rightDiagonal) {
+            for (int i = square.getX() - 1, j = square.getY() + 1; i >= 0 && j < 8; i--, j++)
                 if (board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
-                else{
+                else {
                     if (board[j][i].getPiece().getColor() != getColor())
                         possibleMoves.add(board[j][i]);
                     break;
                 }
-            for(int i = square.getX() + 1, j = square.getY() - 1; i < 8 && j >= 0; i++, j--)
-                if(board[j][i].getPiece() == null)
+            for (int i = square.getX() + 1, j = square.getY() - 1; i < 8 && j >= 0; i++, j--)
+                if (board[j][i].getPiece() == null)
                     possibleMoves.add(board[j][i]);
                 else {
-                    if(board[j][i].getPiece().getColor() != getColor())
+                    if (board[j][i].getPiece().getColor() != getColor())
                         possibleMoves.add(board[j][i]);
                     break;
                 }
         }
 
-        if(jumpMoves != null) {
-            for(JumpMove itr: jumpMoves){
-                if(square.getY() + itr.shiftY > 7 || square.getY() + itr.shiftY < 0 || square.getX() + itr.shiftX < 0
-                || square.getX() + itr.shiftX > 7)
+        if (jumpMoves != null) {
+            for (JumpMove itr : jumpMoves) {
+                if (square.getY() + itr.shiftY > 7 || square.getY() + itr.shiftY < 0 || square.getX() + itr.shiftX < 0
+                        || square.getX() + itr.shiftX > 7)
                     continue;
-                if(board[square.getY() + itr.shiftY][square.getX() + itr.shiftX].getPiece() == null)
+                if (board[square.getY() + itr.shiftY][square.getX() + itr.shiftX].getPiece() == null)
                     possibleMoves.add(board[square.getY() + itr.shiftY][square.getX() + itr.shiftX]);
-                if(board[square.getY() + itr.shiftY][square.getX() + itr.shiftX].getPiece() != null)
-                    if(board[square.getY() + itr.shiftY][square.getX() + itr.shiftX].getPiece().getColor() != color)
+                if (board[square.getY() + itr.shiftY][square.getX() + itr.shiftX].getPiece() != null)
+                    if (board[square.getY() + itr.shiftY][square.getX() + itr.shiftX].getPiece().getColor() != color)
                         possibleMoves.add(board[square.getY() + itr.shiftY][square.getX() + itr.shiftX]);
             }
         }
@@ -147,7 +147,7 @@ public class GenericPiece implements ChessPiece{
         this.right = right;
     }
 
-    public JumpMove[] getJumpMoves(){
+    public JumpMove[] getJumpMoves() {
         return jumpMoves;
     }
 }

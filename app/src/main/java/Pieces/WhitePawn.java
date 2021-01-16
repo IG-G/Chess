@@ -1,6 +1,7 @@
 package Pieces;
 
 import Model.ChessModelSquare;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ public class WhitePawn implements ChessPiece {
     private boolean enPassant = false;
 
     @Override
-    public ColorOfPiece getColor(){
+    public ColorOfPiece getColor() {
         return color;
     }
 
@@ -22,7 +23,7 @@ public class WhitePawn implements ChessPiece {
     }
 
     public void checkOnlyAttackMoves(ChessModelSquare source, ChessModelSquare[][] board, List<ChessModelSquare> possibleMoves) {
-        if(source.getY() == 0)
+        if (source.getY() == 0)
             return;
         if (source.getX() - 1 >= 0) {
             if (source.getX() != 0 && board[source.getY() - 1][source.getX() - 1].getPiece() != null &&
@@ -40,7 +41,7 @@ public class WhitePawn implements ChessPiece {
                     ((BlackPawn) board[3][source.getX() + 1].getPiece()).isEnPassant()) {
                 possibleMoves.add(board[2][source.getX() + 1]);
             }
-            if(source.getX() - 1 >= 0 && board[3][source.getX() - 1].getPiece() != null &&
+            if (source.getX() - 1 >= 0 && board[3][source.getX() - 1].getPiece() != null &&
                     board[3][source.getX() - 1].getPiece() instanceof BlackPawn &&
                     ((BlackPawn) board[3][source.getX() - 1].getPiece()).isEnPassant()) {
                 possibleMoves.add(board[2][source.getX() - 1]);
@@ -52,16 +53,16 @@ public class WhitePawn implements ChessPiece {
     public List<ChessModelSquare> checkPossibleMoves(ChessModelSquare source, ChessModelSquare[][] board) {
         List<ChessModelSquare> possibleMoves = new ArrayList<ChessModelSquare>();
         checkOnlyAttackMoves(source, board, possibleMoves);
-        if(source.getY() != 0 && board[source.getY() - 1][source.getX()].getPiece() == null) //check normal move
+        if (source.getY() != 0 && board[source.getY() - 1][source.getX()].getPiece() == null) //check normal move
             possibleMoves.add(board[source.getY() - 1][source.getX()]);
-        if(source.getY() == 6 && board[source.getY() - 1][source.getX()].getPiece() == null
+        if (source.getY() == 6 && board[source.getY() - 1][source.getX()].getPiece() == null
                 && board[source.getY() - 2][source.getX()].getPiece() == null) //check first move of the pawn
             possibleMoves.add(board[source.getY() - 2][source.getX()]);
 
-        for (ChessModelSquare square: possibleMoves) {
-            if(square.getPiece() != null)
-                    if(square.getPiece().getColor() == ColorOfPiece.WHITE)
-                        possibleMoves.remove(square);
+        for (ChessModelSquare square : possibleMoves) {
+            if (square.getPiece() != null)
+                if (square.getPiece().getColor() == ColorOfPiece.WHITE)
+                    possibleMoves.remove(square);
         }
         return possibleMoves;
     }

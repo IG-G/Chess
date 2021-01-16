@@ -5,16 +5,18 @@ import Model.ChessModelSquare;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rook implements ChessPiece{
+//Rook piece could be made by generic piece class, but rook is used in castling
+//so it is needed to control wasMoved parameter
+public class Rook implements ChessPiece {
     ColorOfPiece color;
     private boolean wasMoved = false;
 
-    public Rook(ColorOfPiece color){
+    public Rook(ColorOfPiece color) {
         this.color = color;
     }
 
     @Override
-    public ColorOfPiece getColor(){
+    public ColorOfPiece getColor() {
         return color;
     }
 

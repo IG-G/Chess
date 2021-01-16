@@ -7,7 +7,7 @@ public class ChessModelSquare {
     private final int x;
     private final int y;
 
-    public ChessModelSquare(int row, int col){
+    public ChessModelSquare(int row, int col) {
         this.piece = null;
         x = col;
         y = row;

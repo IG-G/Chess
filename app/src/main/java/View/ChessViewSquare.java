@@ -10,6 +10,7 @@ public class ChessViewSquare extends JButton {
     Icon pieceIcon;
     int posXInUI, posYInUI;
     int posXOnBoard, posYOnBoard;
+
     public ChessViewSquare() {
         setUI(new BasicButtonUI()); //to clear on-click effects
         posXInUI = 0;
@@ -55,6 +56,7 @@ public class ChessViewSquare extends JButton {
         pieceIcon = icon;
         setIcon(pieceIcon);
     }
+
     public Icon getImageIcon() {
         return pieceIcon;
     }
