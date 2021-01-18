@@ -1,6 +1,6 @@
 ## About
 Project was made for university course. Desktop application written in Java Swing and MVC architecture.
-#Functionalities 
+## Functionalities 
  User can:
  
  - play chess with other human on one PC,
