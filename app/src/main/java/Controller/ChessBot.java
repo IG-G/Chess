@@ -33,7 +33,7 @@ public class ChessBot {
                         possibleMoves.add(new ArrayList<>());
                         controller.boardView.cleanPossibleMovesSquares();
                         possibleMoves.get(tailIndex).add(square);
-                        possibleMoves.get(tailIndex).addAll(Arrays.<ChessModelSquare>asList(controller.previousPossibleMoves));
+                        possibleMoves.get(tailIndex).addAll(Arrays.asList(controller.previousPossibleMoves));
                         tailIndex++;
                     }
                 }

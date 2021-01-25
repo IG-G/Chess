@@ -23,6 +23,7 @@ public class ChessViewBoard {
     ChessViewSquare[] possibleMovesSquares = null;
     ChessViewSquare kingUnderCheck;
 
+
     public ChessViewBoard(Container frame) {
         this.frame = frame;
         chessSquares = new ChessViewSquare[8][8];
@@ -34,6 +35,14 @@ public class ChessViewBoard {
         return chessSquares[row][col];
     }
 
+    public Color getWhiteSquareColor() {
+        return whiteSquareColor;
+    }
+
+    public Color getBlackSquareColor() {
+        return blackSquareColor;
+    }
+
     public void setWhiteSquareColor(Color white) {
         whiteSquareColor = white;
         updateColorOfSquares(ColorOfSquare.WHITE, white);
@@ -42,6 +51,14 @@ public class ChessViewBoard {
     public void setBlackSquareColor(Color black) {
         blackSquareColor = black;
         updateColorOfSquares(ColorOfSquare.BLACK, black);
+    }
+
+    public Color getColorPossibleMove() {
+        return colorPossibleMove;
+    }
+
+    public void setColorPossibleMove(Color colorPossibleMove) {
+        this.colorPossibleMove = colorPossibleMove;
     }
 
     public void resetToDefaultColor(ColorOfSquare color) {

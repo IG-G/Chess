@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChessModelBoard {
-    ChessModelSquare[][] chessBoard;
+    private final ChessModelSquare[][] chessBoard;
     //flags for controller
-    boolean hasGameFinished = false;
-    boolean kingUnderCheck = false;
-    boolean shortCastleHappened = false;
-    boolean longCastleHappened = false;
-    boolean enPassantHappened = false;
-    boolean isStaleMate = false;
+    private boolean hasGameFinished = false;
+    private boolean kingUnderCheck = false;
+    private boolean shortCastleHappened = false;
+    private boolean longCastleHappened = false;
+    private boolean enPassantHappened = false;
+    private boolean isStaleMate = false;
     List<GenericPiece> userWhiteDefinedPieces;
     List<GenericPiece> userBlackDefinedPieces;
 
@@ -77,6 +77,10 @@ public class ChessModelBoard {
                 return userBlackDefinedPieces.get(i);
         }
         return null;
+    }
+
+    public void setPieceOnBoard(int col, int row, ChessPiece piece) {
+        chessBoard[row][col].setPiece(piece);
     }
 
     //check cannot be proceed when castle's squares are being attacked
@@ -215,7 +219,7 @@ public class ChessModelBoard {
         return true;
     }
 
-    private boolean isPieceQueen(ChessModelSquare square) {
+    public boolean isPieceQueen(ChessModelSquare square) {
         if (square.getPiece() == null || !(square.getPiece() instanceof GenericPiece))
             return false;
         GenericPiece piece = (GenericPiece) square.getPiece();
@@ -223,14 +227,14 @@ public class ChessModelBoard {
                 piece.isRight() && piece.isUp() && piece.isDown();
     }
 
-    private boolean isPieceBishop(ChessModelSquare square) {
+    public boolean isPieceBishop(ChessModelSquare square) {
         if (square.getPiece() == null || !(square.getPiece() instanceof GenericPiece))
             return false;
         GenericPiece piece = (GenericPiece) square.getPiece();
         return piece.isLeftDiagonal() && piece.isRightDiagonal();
     }
 
-    private boolean isPieceKnight(ChessModelSquare square) {
+    public boolean isPieceKnight(ChessModelSquare square) {
         if (square.getPiece() == null || !(square.getPiece() instanceof GenericPiece))
             return false;
         GenericPiece piece = (GenericPiece) square.getPiece();
@@ -437,14 +441,14 @@ public class ChessModelBoard {
         chessBoard[7][7].setPiece(new Rook(ColorOfPiece.WHITE));
     }
 
-    private ChessPiece createBishop(ColorOfPiece color) {
+    public ChessPiece createBishop(ColorOfPiece color) {
         GenericPiece bishop = new GenericPiece(color);
         bishop.setLeftDiagonal(true);
         bishop.setRightDiagonal(true);
         return bishop;
     }
 
-    private ChessPiece createQueen(ColorOfPiece color) {
+    public ChessPiece createQueen(ColorOfPiece color) {
         GenericPiece queen = new GenericPiece(color);
         queen.setRightDiagonal(true);
         queen.setLeftDiagonal(true);
@@ -455,7 +459,7 @@ public class ChessModelBoard {
         return queen;
     }
 
-    private ChessPiece createKnight(ColorOfPiece color) {
+    public ChessPiece createKnight(ColorOfPiece color) {
         GenericPiece knight = new GenericPiece(color);
         JumpMove[] moves = {
                 new JumpMove(2, 1),

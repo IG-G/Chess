@@ -47,6 +47,10 @@ public class ChessViewSquare extends JButton {
         return posYOnBoard;
     }
 
+    public Color getDisplayingColorOfSquare() {
+        return displayingColorOfSquare;
+    }
+
     public void setDisplayingColorOfSquare(Color color) {
         displayingColorOfSquare = color;
         setBackground(color);

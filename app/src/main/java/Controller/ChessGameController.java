@@ -24,7 +24,11 @@ public class ChessGameController {
     ColorOfPiece colorOnMove = ColorOfPiece.WHITE;
     boolean isGameWithBot = false;
     ColorOfPiece humanColor = null;
-    ChessBot bot;
+    private ChessBot bot;
+
+    public void setPreviousPossibleMoves(ChessModelSquare[] modelSquares) {
+        previousPossibleMoves = modelSquares;
+    }
 
     public ChessGameController(ChessModelBoard model, ChessViewBoard view, AppGUI mainFrame) {
         boardModel = model;
@@ -172,8 +176,8 @@ public class ChessGameController {
         }
     }
 
-    public void setParamsForNewGameWithBot(ColorOfPiece humanColor) {
-        bot = new ChessBot(boardModel, this);
+    public void setParamsForNewGameWithBot(ChessBot bot, ColorOfPiece humanColor) {
+        this.bot = bot;
         isGameWithBot = true;
         this.humanColor = humanColor;
     }

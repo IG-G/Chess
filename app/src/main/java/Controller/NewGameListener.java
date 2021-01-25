@@ -70,10 +70,11 @@ public class NewGameListener implements ActionListener {
                 option[0]);
 
         if (isBotSelected) {
+            ChessBot bot = new ChessBot(controller.boardModel, controller);
             if (isWhiteSelected)
-                controller.setParamsForNewGameWithBot(ColorOfPiece.WHITE);
+                controller.setParamsForNewGameWithBot(bot, ColorOfPiece.WHITE);
             else
-                controller.setParamsForNewGameWithBot(ColorOfPiece.BLACK);
+                controller.setParamsForNewGameWithBot(bot, ColorOfPiece.BLACK);
         } else
             controller.isGameWithBot = false;
         controller.startNewGame();
