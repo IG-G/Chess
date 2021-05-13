@@ -132,8 +132,16 @@ public class ChessGameController {
                 if ((destinationSquare.getY() == 0 && destinationSquare.getPiece() instanceof WhitePawn) ||
                         (destinationSquare.getY() == 7 && destinationSquare.getPiece() instanceof BlackPawn)) {
                     ChessViewSquare promotionSquare = boardView.getChessViewSquare(destinationSquare.getY(), destinationSquare.getX());
-                    int chosenOption = boardView.makePromotion(promotionSquare);
-                    boardModel.makePromotion(destinationSquare, chosenOption);
+                    if(isGameWithBot && humanColor != colorOnMove){
+                        if(colorOnMove == ColorOfPiece.WHITE)
+                            promotionSquare.setPieceIcon(boardView.getWhitePiecesIcons()[4]);
+                        else
+                            promotionSquare.setPieceIcon(boardView.getBlackPiecesIcons()[4]);
+                        boardModel.makePromotion(destinationSquare, 0);
+                    }else {
+                        int chosenOption = boardView.makePromotion(promotionSquare);
+                        boardModel.makePromotion(destinationSquare, chosenOption);
+                    }
                 }
 
                 //check segment

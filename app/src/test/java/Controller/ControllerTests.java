@@ -29,7 +29,7 @@ public class ControllerTests {
         controller = new ChessGameController(model, view, new AppGUI(frame, view));
     }
 
-    @Test
+    //@Test
     public void testFirstWhitePawnMoveWithPossibilities() {
         testPossibleFirstMovesForWhitePawn();
         controller.selectedForMove = controller.boardModel.getChessModelSquare(4, 6);
@@ -67,7 +67,7 @@ public class ControllerTests {
                 controller.boardView.getWhiteSquareColor());
     }
 
-    @Test
+    //@Test
     public void testGameBetweenBots() {
         ChessBot whiteBot = new ChessBot(controller.boardModel, controller);
         controller.setParamsForNewGameWithBot(whiteBot, ColorOfPiece.BLACK);

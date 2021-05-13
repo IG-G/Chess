@@ -31,6 +31,14 @@ public class ChessViewBoard {
         blackPiecesIcons = new ImageIcon[6];
     }
 
+    public Icon[] getBlackPiecesIcons() {
+        return blackPiecesIcons;
+    }
+
+    public Icon[] getWhitePiecesIcons() {
+        return whitePiecesIcons;
+    }
+
     public ChessViewSquare getChessViewSquare(int row, int col) {
         return chessSquares[row][col];
     }
